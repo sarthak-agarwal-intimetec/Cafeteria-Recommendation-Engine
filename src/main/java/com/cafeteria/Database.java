@@ -42,14 +42,15 @@ public class Database {
         return false;
     }
     
-    public static MenuItem getMenuItemById(int id) {
+    public static MenuItem getMenuItemById(String itemId) {
         MenuItem menuItem = null;
         try (Connection conn = getConnection()) {
             String query = "SELECT * FROM MenuItems WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setInt(1, id);
+            stmt.setString(1, itemId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
+                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 double price = rs.getDouble("price");
                 boolean isAvailable = rs.getBoolean("isAvailable");
@@ -250,5 +251,34 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void addNotification(String message){
+        try (Connection conn = getConnection()) {
+            String query = "INSERT INTO Notifications (message) VALUES(?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, message);
+            stmt.executeUpdate();;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Notification> getNotifications(){
+        List<Notification> notifications = new ArrayList<>();
+        try (Connection conn = getConnection()) {
+            String query = "SELECT * FROM Notifications WHERE DATE(`timestamp`) = CURDATE()";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("Id");
+                String message = rs.getString("Message");
+                Timestamp timeStamp = rs.getTimestamp("Timestamp");
+                notifications.add(new Notification(id, message, timeStamp));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notifications;
     }
 }

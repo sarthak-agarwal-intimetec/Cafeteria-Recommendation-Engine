@@ -15,7 +15,8 @@ public class Employee extends User {
             System.out.println("Commands: ");
             System.out.println("DailyMenuItem - Display items rolled out by chef");
             System.out.println("Vote - Vote for the Item for Next day");
-            System.out.println("Feedback - Vote for the Item for Next day");
+            System.out.println("Feedback - Give feedbak for the Item");
+            System.out.println("Notification - View Today's Notification");
 
             System.out.print("Enter command: ");
             String command = scanner.nextLine();
@@ -58,6 +59,16 @@ public class Employee extends User {
                 while ((response = in.readLine()) != null) {
                     System.out.println(response);
                     if (response.equals("Item feedbacked successfully") || response.equals("Unknown command")) {
+                        break;
+                    }
+                }
+            }
+
+            else if ("Notification".equalsIgnoreCase(command)) {
+                String response;
+                while ((response = in.readLine()) != null) {
+                    System.out.println(response);
+                    if (response.equals("Item fetched successfully") || response.equals("Unknown command")) {
                         break;
                     }
                 }

@@ -22,8 +22,6 @@ public class FoodRecommendation {
                 stmt.setInt(1, item.getId());
                 stmt.executeUpdate();
             }
-            // Notify users about the new recommendation
-            NotificationManager.notifyUsers("New food recommendation available for tomorrow.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
