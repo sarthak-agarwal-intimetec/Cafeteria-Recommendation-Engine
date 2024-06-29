@@ -69,6 +69,7 @@ public class ClientHandler extends Thread {
                 }
                 out.println("Item fetched successfully");
                 break;
+
             case "AddMenuItem":
                 //System.out.println("Reading item details from client");
                 String itemName = in.readLine();
@@ -82,6 +83,8 @@ public class ClientHandler extends Thread {
                 //System.out.println("Received itemIsAvailable: " + itemIsAvailable);
 
                 Database.addMenuItem(itemName, itemPrice, itemIsAvailable);
+                String message = "New Food Item is added, check this out - " + itemName + " -> Price: "+itemPrice;
+                Database.addNotification(message);
                 out.println("Item added successfully");
                 break;
 
@@ -99,8 +102,12 @@ public class ClientHandler extends Thread {
 
                 String itemIsAvailableToUpdate = in.readLine();
                 //System.out.println("Received itemIsAvailable: " + itemIsAvailableToUpdate);
-
+                MenuItem itemToUpdate = Database.getMenuItemById(itemIdToUpdate);
                 Database.updateMenuItem(itemIdToUpdate, itemNameToUpdate, itemPriceToUpdate,itemIsAvailableToUpdate);
+                if(String.valueOf(itemToUpdate.isAvailable()) != itemIsAvailableToUpdate){
+                    message = "Availability status of this food item is changed - " + itemNameToUpdate + " -> " + (itemIsAvailableToUpdate == "true" ? "Available" : "Not Available");
+                    Database.addNotification(message);
+                }
                 out.println("Item updated successfully");
                 break;
 
@@ -123,6 +130,7 @@ public class ClientHandler extends Thread {
                 }
                 out.println("Item fetched successfully");
                 break;
+
             case "RollOutMenu":
                 //System.out.println("Reading item details from client");
                 String itemIdStr = in.readLine();
@@ -130,8 +138,12 @@ public class ClientHandler extends Thread {
                 //System.out.println("Received itemName: " + itemId);
                 
                 Database.addDailyMenuItem(itemId);
+                MenuItem menuItem = Database.getMenuItemById(itemIdStr);
+                message = "Today's Food Item is: " + menuItem.getName() + ", please give vote if you like to have it for next day";
+                Database.addNotification(message);
                 out.println("Item added successfully");
                 break;
+
             case "DailyMenuItem":
                 List<DailyMenuItem> dailyMenuItems = Database.getDailyMenuItem();
                 for (DailyMenuItem dailyMenuItem : dailyMenuItems) {
@@ -139,6 +151,7 @@ public class ClientHandler extends Thread {
                 }
                 out.println("Item fetched successfully");
                 break;
+
             case "Vote":
                 //System.out.println("Reading item details from client");
                 
@@ -172,6 +185,15 @@ public class ClientHandler extends Thread {
                 Database.addFeedback(itemIdForFeedback, itemRating, itemComment, userId);
                 out.println("Item feedbacked successfully");
                 break;
+            
+            case "Notification":
+                List<Notification> notifications = Database.getNotifications();
+                for (Notification notification : notifications) {
+                    out.println(notification.getTimestamp() + " - " + notification.getMessage());
+                }
+                out.println("Item fetched successfully");
+                break;
+
             default:
                 out.println("Unknown command");
                 break;

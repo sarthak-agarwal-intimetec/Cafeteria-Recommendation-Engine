@@ -5,13 +5,11 @@ public class Notification {
     private int id;
     private String message;
     private Date timestamp;
-    private String userId;
 
-    public Notification(int id, String message, Date timestamp, String userId) {
+    public Notification(int id, String message, Date timestamp) {
         this.id = id;
         this.message = message;
         this.timestamp = timestamp;
-        this.userId = userId;
     }
 
     public int getId() {
@@ -24,9 +22,5 @@ public class Notification {
 
     public Date getTimestamp() {
         return timestamp;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 }
