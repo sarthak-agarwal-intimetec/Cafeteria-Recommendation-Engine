@@ -88,7 +88,7 @@ public class Database {
             stmt.setString(1, itemName);
             stmt.setDouble(2, itemPrice);
             stmt.setString(3, itemIsAvailable);
-            stmt.executeUpdate();;
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -197,24 +197,12 @@ public class Database {
                 stmt.setInt(1, recommendationEngine.itemFeedbacks.get(itemId));
                 stmt.setDouble(2, recommendationEngine.itemRatings.get(itemId));
                 stmt.setInt(3, itemId);
-                stmt.executeUpdate();;
+                stmt.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-    /* public static void updateVoteCount(String itemid) {
-        //List<MenuItem> menuItems = new ArrayList<>();
-        try (Connection conn = getConnection()) {
-            String query = "DELETE FROM MenuItems WHERE Id = ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, itemid);
-            stmt.executeUpdate();;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    } */
 
     public static void updateVoteCount(int itemIdToVote) {
         //List<MenuItem> menuItems = new ArrayList<>();
@@ -280,5 +268,51 @@ public class Database {
             e.printStackTrace();
         }
         return notifications;
+    }
+
+    public static void updateDiscardMenuItemList(RecommendationEngine recommendationEngine){
+        try (Connection conn = getConnection()) {
+            String query = "DELETE FROM DiscardMenuItem";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.executeUpdate();
+            for(Integer itemId : recommendationEngine.itemFeedbacks.keySet()){
+                if(recommendationEngine.itemRatings.get(itemId) < 2 && recommendationEngine.itemFeedbacks.get(itemId) < 0){
+                    query = "INSERT INTO DiscardMenuItem (ItemId) VALUES(?)";
+                    stmt = conn.prepareStatement(query);
+                    stmt.setInt(1, itemId);
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<DiscardMenuItem> getDiscardMenuItems() {
+        List<DiscardMenuItem> discardMenuItems = new ArrayList<>();
+        try (Connection conn = getConnection()) {
+            String query = "SELECT * FROM DiscardMenuItem";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("Id");
+                int itemId = rs.getInt("ItemId");
+                discardMenuItems.add(new DiscardMenuItem(id, itemId));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return discardMenuItems;
+    }
+
+    public static void removeDiscardMenuItem(String itemid) {
+        try (Connection conn = getConnection()) {
+            String query = "DELETE FROM DiscardMenuItem WHERE Id = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, itemid);
+            stmt.executeUpdate();;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

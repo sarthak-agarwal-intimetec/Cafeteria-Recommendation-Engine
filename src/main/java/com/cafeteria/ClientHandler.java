@@ -124,6 +124,7 @@ public class ClientHandler extends Thread {
                 List<Feedback> feedbacks = Database.getFeedbacks();
                 RecommendationEngine recommendationEngine = new RecommendationEngine(feedbacks);
                 Database.updateRatingAndSentimentScore(recommendationEngine);
+                Database.updateDiscardMenuItemList(recommendationEngine);
                 for (Integer itemId : recommendationEngine.itemRatings.keySet()) {
                     //System.out.println("@@@");
                     out.println(itemId + " - " + (recommendationEngine.itemRatings.get(itemId) + recommendationEngine.itemFeedbacks.get(itemId)));
@@ -147,7 +148,7 @@ public class ClientHandler extends Thread {
             case "DailyMenuItem":
                 List<DailyMenuItem> dailyMenuItems = Database.getDailyMenuItem();
                 for (DailyMenuItem dailyMenuItem : dailyMenuItems) {
-                    out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId() + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentimentScore());
+                    out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId() + " - " + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentimentScore());
                 }
                 out.println("Item fetched successfully");
                 break;
@@ -192,6 +193,31 @@ public class ClientHandler extends Thread {
                     out.println(notification.getTimestamp() + " - " + notification.getMessage());
                 }
                 out.println("Item fetched successfully");
+                break;
+
+            case "ViewDiscardMenuItem":
+                List<DiscardMenuItem> discardMenuItems = Database.getDiscardMenuItems();
+                for (DiscardMenuItem discardMenuItem : discardMenuItems) {
+                    out.println(discardMenuItem.getId() + " - " + discardMenuItem.getItemId());
+                }
+                out.println("Item fetched successfully");
+                break;
+
+            case "RemoveDiscardMenuItem":
+                String itemIdToRemove = in.readLine();
+
+                Database.deleteMenuItem(itemIdToRemove);
+                Database.removeDiscardMenuItem(itemIdToRemove);
+                out.println("Item updated successfully");
+                break;
+
+            case "DiscardMenuItemNotification":
+                String itemIdToDiscardNotification = in.readLine();
+                out.println("We are trying to improve your experience with "+ itemIdToDiscardNotification + ". Please provide your feedback and help us. \n" + 
+                "Q1. What didn't you like about " + itemIdToDiscardNotification + "?\n" +
+                "Q2. How would you like " + itemIdToDiscardNotification + " to taste?\n" +
+                "Q3. Share your mom's recipe");
+                out.println("Notification sent successfully");
                 break;
 
             default:

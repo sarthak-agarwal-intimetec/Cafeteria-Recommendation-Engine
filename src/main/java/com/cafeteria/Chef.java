@@ -16,7 +16,10 @@ public class Chef extends User {
             System.out.println("Commands: ");
             System.out.println("ShowRecommendation - Show Recommendation");
             System.out.println("RollOutMenu - Roll Out Menu");
-
+            System.out.println("ViewDiscardMenuItem - View Discard Menu Item");
+            System.out.println("RemoveDiscardMenuItem - Delete Item in Discard Menu items");
+            System.out.println("DiscardMenuItemNotification - Send Notification to users to know more about improvements to be done for selected food item.");
+            
             System.out.print("Enter command: ");
             String command = scanner.nextLine();
             out.println(command);
@@ -39,6 +42,42 @@ public class Chef extends User {
                 while ((response = in.readLine()) != null) {
                     System.out.println(response);
                     if (response.equals("Item added successfully") || response.equals("Unknown command")) {
+                        break;
+                    }
+                }
+            }
+
+            else if ("ViewDiscardMenuItem".equalsIgnoreCase(command)) {
+                String response;
+                while ((response = in.readLine()) != null) {
+                    System.out.println(response);
+                    if (response.equals("Item fetched successfully") || response.equals("Unknown command")) {
+                        break;
+                    }
+                }
+            }
+
+            else if ("RemoveDiscardMenuItem".equalsIgnoreCase(command)) {
+                System.out.print("Enter item Id: ");
+                out.println(scanner.nextLine());
+
+                String response;
+                while ((response = in.readLine()) != null) {
+                    System.out.println(response);
+                    if (response.equals("Item Deleted successfully") || response.equals("Unknown command")) {
+                        break;
+                    }
+                }
+            }
+
+            else if ("DiscardMenuItemNotification".equalsIgnoreCase(command)) {
+                System.out.print("Enter item Id: ");
+                out.println(scanner.nextLine());
+            
+                String response;
+                while ((response = in.readLine()) != null) {
+                    System.out.println(response);
+                    if (response.equals("Notification sent successfully") || response.equals("Unknown command")) {
                         break;
                     }
                 }
