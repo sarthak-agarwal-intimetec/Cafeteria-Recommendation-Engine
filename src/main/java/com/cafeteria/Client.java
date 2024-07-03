@@ -1,6 +1,7 @@
 package src.main.java.com.cafeteria;
+
 import java.io.*;
-import java.net.*;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
@@ -9,44 +10,59 @@ public class Client {
 
     public static void main(String[] args) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            Scanner scanner = new Scanner(System.in)) {
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             Scanner scanner = new Scanner(System.in)) {
 
-            System.out.print("Enter Employee ID: ");
-            String employeeId = scanner.nextLine();
-            System.out.print("Enter Name: ");
-            String name = scanner.nextLine();
+            String employeeId = getInput(scanner, "Enter Employee ID: ");
+            String name = getInput(scanner, "Enter Name: ");
 
-            //out.println(role);
-            out.println(employeeId);
-            out.println(name);
-            
+            authenticateUser(out, employeeId, name);
+
             String role = in.readLine();
+            handleServerResponse(in, scanner, out, role);
 
-            String serverResponse = in.readLine();
-            if (serverResponse != null){
-                System.out.println(serverResponse);
-
-                if (serverResponse.startsWith("Login successful")) {
-                    
-                    if("Admin".equals(role)){
-                        Admin.showCommands(scanner, out, in);
-                    }
-
-                    else if("Chef".equals(role)){
-                        Chef.showCommands(scanner, out, in);
-                    }
-
-                    else if("Employee".equals(role)){
-                        Employee.showCommands(scanner, out, in);
-                    }
-                }
-            } else {
-                System.out.println("No response from server. Connection may be closed.");
-            }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static String getInput(Scanner scanner, String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
+    }
+
+    private static void authenticateUser(PrintWriter out, String employeeId, String name) {
+        out.println(employeeId);
+        out.println(name);
+    }
+
+    private static void handleServerResponse(BufferedReader in, Scanner scanner, PrintWriter out, String role) throws IOException {
+        String serverResponse = in.readLine();
+        if (serverResponse != null) {
+            System.out.println(serverResponse);
+
+            if (serverResponse.startsWith("Login successful")) {
+                showRoleCommands(scanner, out, in, role);
+            }
+        } else {
+            System.out.println("No response from server. Connection may be closed.");
+        }
+    }
+
+    private static void showRoleCommands(Scanner scanner, PrintWriter out, BufferedReader in, String role) throws IOException {
+        switch (role) {
+            case "Admin":
+                Admin.showCommands(scanner, out, in);
+                break;
+            case "Chef":
+                Chef.showCommands(scanner, out, in);
+                break;
+            case "Employee":
+                Employee.showCommands(scanner, out, in);
+                break;
+            default:
+                System.out.println("Unknown role: " + role);
         }
     }
 }

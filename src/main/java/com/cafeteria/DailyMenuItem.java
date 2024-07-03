@@ -1,16 +1,24 @@
 package src.main.java.com.cafeteria;
+
 import java.util.Date;
+import java.util.Objects;
 
 public class DailyMenuItem {
-    private int id;
-    private Date date;
-    private int itemId;
-    private double averageRating;
-    private double sentimentScore;
+    private final int id;
+    private final Date date;
+    private final int itemId;
+    private final double averageRating;
+    private final double sentimentScore;
 
     public DailyMenuItem(int id, Date date, int itemId, double averageRating, double sentimentScore) {
+        if (id <= 0 || itemId <= 0) {
+            throw new IllegalArgumentException("ID and Item ID must be positive.");
+        }
+        if (averageRating < 0 || averageRating > 5) {
+            throw new IllegalArgumentException("Average rating must be between 0 and 5.");
+        }
         this.id = id;
-        this.date = date;
+        this.date = Objects.requireNonNull(date, "Date cannot be null");
         this.itemId = itemId;
         this.averageRating = averageRating;
         this.sentimentScore = sentimentScore;

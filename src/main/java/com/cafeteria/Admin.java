@@ -1,126 +1,119 @@
 package src.main.java.com.cafeteria;
-import java.io.*;
-import java.net.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Admin extends User {
     public Admin(String employeeId, String name, String role) {
         super(employeeId, name, role);
     }
-    
+
     public static void showCommands(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
         while (true) {
-            System.out.println("Commands: ");
-            System.out.println("ShowMenu - Show menu items");
-            System.out.println("AddMenuItem - Add menu items");
-            System.out.println("UpdateMenuItem - Update menu items");
-            System.out.println("DeleteMenuItem - Delete menu items");
-            System.out.println("ViewDiscardMenuItem - View Discard Menu Item");
-            System.out.println("RemoveDiscardMenuItem - Delete Item in Discard Menu items");
-            System.out.println("DiscardMenuItemNotification - Send Notification to users to know more about improvements to be done for selected food item.");
+            displayMenu();
 
-            System.out.print("Enter command: ");
-            String command = scanner.nextLine();
+            String command = getUserInput(scanner, "Enter command: ");
             out.println(command);
 
             if ("ShowMenu".equalsIgnoreCase(command)) {
-                String response;
-                while ((response = in.readLine()) != null) {
-                    System.out.println(response);
-                    if (response.equals("Item fetched successfully") || response.equals("Unknown command")) {
-                        break;
-                    }
-                }
+                handleShowMenu(in);
+            } else if ("AddMenuItem".equalsIgnoreCase(command)) {
+                handleAddMenuItem(scanner, out, in);
+            } else if ("UpdateMenuItem".equalsIgnoreCase(command)) {
+                handleUpdateMenuItem(scanner, out, in);
+            } else if ("DeleteMenuItem".equalsIgnoreCase(command)) {
+                handleDeleteMenuItem(scanner, out, in);
+            } else if ("ViewDiscardMenuItem".equalsIgnoreCase(command)) {
+                handleViewDiscardMenuItem(in);
+            } else if ("RemoveDiscardMenuItem".equalsIgnoreCase(command)) {
+                handleRemoveDiscardMenuItem(scanner, out, in);
+            } else if ("DiscardMenuItemNotification".equalsIgnoreCase(command)) {
+                handleDiscardMenuItemNotification(scanner, out, in);
+            } else {
+                System.out.println("Unknown command");
             }
+        }
+    }
 
-            else if ("AddMenuItem".equalsIgnoreCase(command)) {
-                System.out.print("Enter item name: ");
-                out.println(scanner.nextLine());
+    private static void displayMenu() {
+        System.out.println("Commands: ");
+        System.out.println("ShowMenu - Show menu items");
+        System.out.println("AddMenuItem - Add menu items");
+        System.out.println("UpdateMenuItem - Update menu items");
+        System.out.println("DeleteMenuItem - Delete menu items");
+        System.out.println("ViewDiscardMenuItem - View Discard Menu Item");
+        System.out.println("RemoveDiscardMenuItem - Delete Item in Discard Menu items");
+        System.out.println("DiscardMenuItemNotification - Send Notification to users to know more about improvements to be done for selected food item.");
+    }
 
-                System.out.print("Enter item price: ");
-                out.println(scanner.nextLine());
+    private static String getUserInput(Scanner scanner, String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
+    }
 
-                System.out.print("Is item available (true/false): ");
-                out.println(scanner.nextLine());
+    private static void handleShowMenu(BufferedReader in) throws IOException {
+        handleServerResponse(in, "Item fetched successfully");
+    }
 
-                String response;
-                while ((response = in.readLine()) != null) {
-                    System.out.println(response);
-                    if (response.equals("Item added successfully") || response.equals("Unknown command")) {
-                        break;
-                    }
-                }
-            }
+    private static void handleAddMenuItem(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
+        String name = getUserInput(scanner, "Enter item name: ");
+        String price = getUserInput(scanner, "Enter item price: ");
+        String availability = getUserInput(scanner, "Is item available (true/false): ");
 
-            else if ("UpdateMenuItem".equalsIgnoreCase(command)) {
-                System.out.print("Enter item Id: ");
-                out.println(scanner.nextLine());
+        out.println(name);
+        out.println(price);
+        out.println(availability);
 
-                System.out.print("Enter item name: ");
-                out.println(scanner.nextLine());
+        handleServerResponse(in, "Item added successfully");
+    }
 
-                System.out.print("Enter item price: ");
-                out.println(scanner.nextLine());
+    private static void handleUpdateMenuItem(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
+        String id = getUserInput(scanner, "Enter item Id: ");
+        String name = getUserInput(scanner, "Enter item name: ");
+        String price = getUserInput(scanner, "Enter item price: ");
+        String availability = getUserInput(scanner, "Is item available (true/false): ");
 
-                System.out.print("Is item available (true/false): ");
-                out.println(scanner.nextLine());
+        out.println(id);
+        out.println(name);
+        out.println(price);
+        out.println(availability);
 
-                String response;
-                while ((response = in.readLine()) != null) {
-                    System.out.println(response);
-                    if (response.equals("Item updated successfully") || response.equals("Unknown command")) {
-                        break;
-                    }
-                }
-            }
+        handleServerResponse(in, "Item updated successfully");
+    }
 
-            else if ("DeleteMenuItem".equalsIgnoreCase(command)) {
-                System.out.print("Enter item Id: ");
-                out.println(scanner.nextLine());
+    private static void handleDeleteMenuItem(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
+        String id = getUserInput(scanner, "Enter item Id: ");
+        out.println(id);
 
-                String response;
-                while ((response = in.readLine()) != null) {
-                    System.out.println(response);
-                    if (response.equals("Item Deleted successfully") || response.equals("Unknown command")) {
-                        break;
-                    }
-                }
-            }
+        handleServerResponse(in, "Item Deleted successfully");
+    }
 
-            else if ("ViewDiscardMenuItem".equalsIgnoreCase(command)) {
-                String response;
-                while ((response = in.readLine()) != null) {
-                    System.out.println(response);
-                    if (response.equals("Item fetched successfully") || response.equals("Unknown command")) {
-                        break;
-                    }
-                }
-            }
+    private static void handleViewDiscardMenuItem(BufferedReader in) throws IOException {
+        handleServerResponse(in, "Item fetched successfully");
+    }
 
-            else if ("RemoveDiscardMenuItem".equalsIgnoreCase(command)) {
-                System.out.print("Enter item Id: ");
-                out.println(scanner.nextLine());
+    private static void handleRemoveDiscardMenuItem(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
+        String id = getUserInput(scanner, "Enter item Id: ");
+        out.println(id);
 
-                String response;
-                while ((response = in.readLine()) != null) {
-                    System.out.println(response);
-                    if (response.equals("Item Deleted successfully") || response.equals("Unknown command")) {
-                        break;
-                    }
-                }
-            }
+        handleServerResponse(in, "Item Deleted successfully");
+    }
 
-            else if ("DiscardMenuItemNotification".equalsIgnoreCase(command)) {
-                System.out.print("Enter item Id: ");
-                out.println(scanner.nextLine());
-            
-                String response;
-                while ((response = in.readLine()) != null) {
-                    System.out.println(response);
-                    if (response.equals("Notification sent successfully") || response.equals("Unknown command")) {
-                        break;
-                    }
-                }
+    private static void handleDiscardMenuItemNotification(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
+        String id = getUserInput(scanner, "Enter item Id: ");
+        out.println(id);
+
+        handleServerResponse(in, "Notification sent successfully");
+    }
+
+    private static void handleServerResponse(BufferedReader in, String successMessage) throws IOException {
+        String response;
+        while ((response = in.readLine()) != null) {
+            System.out.println(response);
+            if (response.equals(successMessage) || response.equals("Unknown command")) {
+                break;
             }
         }
     }

@@ -1,72 +1,86 @@
 package src.main.java.com.cafeteria;
+
 import java.util.*;
 
 public class RecommendationEngine {
     private List<Feedback> feedbacks;
-    public Map<Integer, Integer> itemFeedbacks = new HashMap<>();
-    public Map<Integer, Double> itemRatings = new HashMap<>();
-    private Map<Integer, Double> itemRatingCounts = new HashMap<>();
-    private Map<Integer, Double> itemRatingScores = new HashMap<>();
+    public Map<Integer, Integer> itemFeedbacks;
+    public Map<Integer, Double> itemRatings;
+    private Map<Integer, Double> itemRatingCounts;
+    private Map<Integer, Double> itemRatingScores;
 
     public RecommendationEngine(List<Feedback> feedbacks) {
         this.feedbacks = feedbacks;
+        this.itemFeedbacks = new HashMap<>();
+        this.itemRatings = new HashMap<>();
+        this.itemRatingCounts = new HashMap<>();
+        this.itemRatingScores = new HashMap<>();
         analyzeFeedbacks();
-        getAverageRatings();
+        calculateAverageRatings();
     }
 
     private void analyzeFeedbacks() {
-        for(Feedback feedback : feedbacks){
-            if(!itemFeedbacks.containsKey(feedback.getItemId())){
-                itemFeedbacks.put(feedback.getItemId(),0);
-            }
-            if(PositiveWords.positiveWords.contains(feedback.getComment())){
-                Integer feedBackCount = itemFeedbacks.get(feedback.getItemId()) + 1;
-                itemFeedbacks.put(feedback.getItemId(),feedBackCount);
-            }
-            if(NegativeWords.negativeWords.contains(feedback.getComment())){
-                Integer feedBackCount = itemFeedbacks.get(feedback.getItemId()) - 1;
-                itemFeedbacks.put(feedback.getItemId(),feedBackCount);
+        for (Feedback feedback : feedbacks) {
+            int itemId = feedback.getItemId();
+            itemFeedbacks.putIfAbsent(itemId, 0);
+
+            if (PositiveWords.contains(feedback.getComment())) {
+                itemFeedbacks.put(itemId, itemFeedbacks.get(itemId) + 1);
+            } else if (NegativeWords.contains(feedback.getComment())) {
+                itemFeedbacks.put(itemId, itemFeedbacks.get(itemId) - 1);
             }
         }
     }
 
-    public void getAverageRatings() {
-        for(Feedback feedback : feedbacks){
-            if(!itemRatingScores.containsKey(feedback.getItemId())){
-                itemRatingScores.put(feedback.getItemId(),0.0);
-            }
-            Double ratingCount = itemRatingScores.get(feedback.getItemId()) + feedback.getRating();
-            itemRatingScores.put(feedback.getItemId(),ratingCount);
+    private void calculateAverageRatings() {
+        for (Feedback feedback : feedbacks) {
+            int itemId = feedback.getItemId();
+            itemRatingScores.putIfAbsent(itemId, 0.0);
+            itemRatingScores.put(itemId, itemRatingScores.get(itemId) + feedback.getRating());
+
+            itemRatingCounts.putIfAbsent(itemId, 0.0);
+            itemRatingCounts.put(itemId, itemRatingCounts.get(itemId) + 1);
         }
 
-        for(Feedback feedback : feedbacks){
-            if(!itemRatingCounts.containsKey(feedback.getItemId())){
-                itemRatingCounts.put(feedback.getItemId(),0.0);
-            }
-            Double ratingCount = itemRatingCounts.get(feedback.getItemId()) + 1;
-            itemRatingCounts.put(feedback.getItemId(),ratingCount);
+        for (Map.Entry<Integer, Double> entry : itemRatingScores.entrySet()) {
+            int itemId = entry.getKey();
+            double totalScore = entry.getValue();
+            double count = itemRatingCounts.get(itemId);
+            itemRatings.put(itemId, totalScore / count);
         }
+    }
 
-        for(Feedback feedback : feedbacks){
-            itemRatings.put(feedback.getItemId(),(itemRatingScores.get(feedback.getItemId())/itemRatingCounts.get(feedback.getItemId())));
-        }
+    public Map<Integer, Integer> getItemFeedbacks() {
+        return itemFeedbacks;
+    }
+
+    public Map<Integer, Double> getItemRatings() {
+        return itemRatings;
     }
 }
 
 class PositiveWords {
-    static List<String> positiveWords = Arrays.asList(
-            "Excellent", "Outstanding", "Superb", "Fantastic", "Brilliant",
-            "Exceptional", "Impressive", "Marvelous", "Remarkable", "Wonderful",
-            "Great", "Amazing", "Terrific", "Fabulous", "Awesome",
-            "Stellar", "Extraordinary", "Magnificent", "Perfect", "Commendable"
-        );
+    private static final List<String> POSITIVE_WORDS = Arrays.asList(
+        "Excellent", "Outstanding", "Superb", "Fantastic", "Brilliant",
+        "Exceptional", "Impressive", "Marvelous", "Remarkable", "Wonderful",
+        "Great", "Amazing", "Terrific", "Fabulous", "Awesome",
+        "Stellar", "Extraordinary", "Magnificent", "Perfect", "Commendable"
+    );
+
+    public static boolean contains(String word) {
+        return POSITIVE_WORDS.contains(word);
+    }
 }
 
 class NegativeWords {
-    static List<String> negativeWords = Arrays.asList(
-            "Poor", "Disappointing", "Unsatisfactory", "Inadequate", "Subpar",
-            "Mediocre", "Lacking", "Unacceptable", "Deficient", "Inferior",
-            "Weak", "Flawed", "Ineffective", "Insufficient", "Dismal",
-            "Unimpressive", "Below standard", "Troubling", "Frustrating", "Incomplete"
+    private static final List<String> NEGATIVE_WORDS = Arrays.asList(
+        "Poor", "Disappointing", "Unsatisfactory", "Inadequate", "Subpar",
+        "Mediocre", "Lacking", "Unacceptable", "Deficient", "Inferior",
+        "Weak", "Flawed", "Ineffective", "Insufficient", "Dismal",
+        "Unimpressive", "Below standard", "Troubling", "Frustrating", "Incomplete"
     );
+
+    public static boolean contains(String word) {
+        return NEGATIVE_WORDS.contains(word);
+    }
 }
