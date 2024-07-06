@@ -154,7 +154,7 @@ public class Database {
     }
 
     public static List<DailyMenuItem> getDailyMenuItems() {
-        String query = "SELECT d.id, d.date, d.itemId, m.averageRating, m.sentimentScore " +
+        String query = "SELECT d.id, d.date, d.itemId, m.averageRating, m.sentiment " +
                        "FROM DailyMenuItem d " +
                        "INNER JOIN MenuItems m ON d.itemId = m.id";
         List<DailyMenuItem> dailyMenuItems = new ArrayList<>();
@@ -165,7 +165,7 @@ public class Database {
                     rs.getDate("d.date"),
                     rs.getInt("d.itemId"),
                     rs.getDouble("m.averageRating"),
-                    rs.getDouble("m.sentimentScore")
+                    rs.getString("m.sentiment")
                 ));
             }
         } catch (SQLException e) {
@@ -174,11 +174,11 @@ public class Database {
         return dailyMenuItems;
     }
 
-    public static void updateRatingAndSentimentScore(RecommendationEngine recommendationEngine) {
-        String query = "UPDATE MenuItems SET sentimentScore = ?, averageRating = ? WHERE id = ?";
+    public static void updateRatingSentiment(RecommendationEngine recommendationEngine) {
+        String query = "UPDATE MenuItems SET sentiment = ?, averageRating = ? WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            for (Integer itemId : recommendationEngine.getItemFeedbacks().keySet()) {
-                stmt.setInt(1, recommendationEngine.getItemFeedbacks().get(itemId));
+            for (Integer itemId : recommendationEngine.getItemFeedbackSentiments().keySet()) {
+                stmt.setString(1, recommendationEngine.getItemFeedbackSentiments().get(itemId));
                 stmt.setDouble(2, recommendationEngine.getItemRatings().get(itemId));
                 stmt.setInt(3, itemId);
                 stmt.executeUpdate();
@@ -253,8 +253,8 @@ public class Database {
         String insertQuery = "INSERT INTO DiscardMenuItem (itemId) VALUES (?)";
         try (Connection conn = getConnection(); PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery); PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
             deleteStmt.executeUpdate();
-            for (Integer itemId : recommendationEngine.getItemFeedbacks().keySet()) {
-                if (recommendationEngine.getItemRatings().get(itemId) < 2 && recommendationEngine.getItemFeedbacks().get(itemId) < 0) {
+            for (Integer itemId : recommendationEngine.getItemFeedbackSentiments().keySet()) {
+                if (recommendationEngine.getItemRatings().get(itemId) < 2 && recommendationEngine.getItemFeedbackSentiments().get(itemId) == "Negative") {
                     insertStmt.setInt(1, itemId);
                     insertStmt.executeUpdate();
                 }

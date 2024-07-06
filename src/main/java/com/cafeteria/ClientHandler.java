@@ -156,10 +156,10 @@ public class ClientHandler extends Thread {
     private void handleShowRecommendation() throws IOException {
         List<Feedback> feedbacks = Database.getFeedbacks();
         RecommendationEngine recommendationEngine = new RecommendationEngine(feedbacks);
-        Database.updateRatingAndSentimentScore(recommendationEngine);
+        Database.updateRatingSentiment(recommendationEngine);
         Database.updateDiscardMenuItemList(recommendationEngine);
         for (Integer itemId : recommendationEngine.itemRatings.keySet()) {
-            out.println(itemId + " - " + (recommendationEngine.itemRatings.get(itemId) + recommendationEngine.itemFeedbacks.get(itemId)));
+            out.println(itemId + " - Ratings - " + (recommendationEngine.itemRatings.get(itemId) + ", Feedback - " + recommendationEngine.itemFeedbackSentiments.get(itemId)));
         }
         out.println("Item fetched successfully");
     }
@@ -175,7 +175,7 @@ public class ClientHandler extends Thread {
     private void handleDailyMenuItem() throws IOException {
         List<DailyMenuItem> dailyMenuItems = Database.getDailyMenuItems();
         for (DailyMenuItem dailyMenuItem : dailyMenuItems) {
-            out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId() + " - " + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentimentScore());
+            out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId() + " - " + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentiment());
         }
         out.println("Item fetched successfully");
     }
