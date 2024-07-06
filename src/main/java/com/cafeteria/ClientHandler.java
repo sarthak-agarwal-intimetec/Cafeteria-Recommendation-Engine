@@ -88,7 +88,7 @@ public class ClientHandler extends Thread {
                 handleRollOutMenu();
                 break;
             case "dailymenuitem":
-                handleDailyMenuItem();
+                handleDailyMenuItem(user);
                 break;
             case "vote":
                 handleVote();
@@ -108,6 +108,9 @@ public class ClientHandler extends Thread {
             case "discardmenuitemnotification":
                 handleDiscardMenuItemNotification();
                 break;
+            case "profile":
+                handleProfile(user);
+                break;
             default:
                 out.println("Unknown command");
                 break;
@@ -117,7 +120,8 @@ public class ClientHandler extends Thread {
     private void handleShowMenu() throws IOException {
         List<MenuItem> menuItems = Database.getAllMenuItems();
         for (MenuItem item : menuItems) {
-            out.println(item.getId() + ". " + item.getName() + " - " + item.getPrice() + " - " + (item.isAvailable() ? "Available" : "Not Available"));
+            out.println(item.getId() + ". " + item.getName() + " - " + item.getPrice() + " - "
+                    + (item.isAvailable() ? "Available" : "Not Available"));
         }
         out.println("Item fetched successfully");
     }
@@ -141,7 +145,8 @@ public class ClientHandler extends Thread {
 
         Database.updateMenuItem(itemIdToUpdate, itemNameToUpdate, itemPriceToUpdate, itemIsAvailableToUpdate);
         if (String.valueOf(itemToUpdate.isAvailable()) != itemIsAvailableToUpdate) {
-            String message = "Availability status of this food item is changed - " + itemNameToUpdate + " -> " + (itemIsAvailableToUpdate.equals("true") ? "Available" : "Not Available");
+            String message = "Availability status of this food item is changed - " + itemNameToUpdate + " -> "
+                    + (itemIsAvailableToUpdate.equals("true") ? "Available" : "Not Available");
             Database.addNotification(message);
         }
         out.println("Item updated successfully");
@@ -159,7 +164,8 @@ public class ClientHandler extends Thread {
         Database.updateRatingSentiment(recommendationEngine);
         Database.updateDiscardMenuItemList(recommendationEngine);
         for (Integer itemId : recommendationEngine.itemRatings.keySet()) {
-            out.println(itemId + " - Ratings - " + (recommendationEngine.itemRatings.get(itemId) + ", Feedback - " + recommendationEngine.itemFeedbackSentiments.get(itemId)));
+            out.println(itemId + " - Ratings - " + (recommendationEngine.itemRatings.get(itemId) + ", Feedback - "
+                    + recommendationEngine.itemFeedbackSentiments.get(itemId)));
         }
         out.println("Item fetched successfully");
     }
@@ -168,14 +174,17 @@ public class ClientHandler extends Thread {
         int itemId = Integer.parseInt(in.readLine());
         Database.addDailyMenuItem(itemId);
         MenuItem menuItem = Database.getMenuItemById(String.valueOf(itemId));
-        Database.addNotification("Today's Food Item is: " + menuItem.getName() + ", please give vote if you like to have it for next day");
+        Database.addNotification("Today's Food Item is: " + menuItem.getName()
+                + ", please give vote if you like to have it for next day");
         out.println("Item added successfully");
     }
 
-    private void handleDailyMenuItem() throws IOException {
-        List<DailyMenuItem> dailyMenuItems = Database.getDailyMenuItems();
+    private void handleDailyMenuItem(User user) throws IOException {
+        User userDetail = Database.getUserPreferenceDetail(user.getEmployeeId());
+        List<DailyMenuItem> dailyMenuItems = Database.getDailyMenuItems(userDetail);
         for (DailyMenuItem dailyMenuItem : dailyMenuItems) {
-            out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId() + " - " + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentiment());
+            out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId()
+                    + " - " + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentiment());
         }
         out.println("Item fetched successfully");
     }
@@ -221,7 +230,8 @@ public class ClientHandler extends Thread {
 
     private void handleDiscardMenuItemNotification() throws IOException {
         String itemIdToDiscardNotification = in.readLine();
-        out.println("We are trying to improve your experience with " + itemIdToDiscardNotification + ". Please provide your feedback and help us. \n" +
+        out.println("We are trying to improve your experience with " + itemIdToDiscardNotification
+                + ". Please provide your feedback and help us. \n" +
                 "Q1. What didn't you like about " + itemIdToDiscardNotification + "?\n" +
                 "Q2. How would you like " + itemIdToDiscardNotification + " to taste?\n" +
                 "Q3. Share your mom's recipe");
@@ -235,5 +245,16 @@ public class ClientHandler extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleProfile(User user) throws IOException {
+        int dietaryPreference = Integer.parseInt(in.readLine());
+        int spiceLevel = Integer.parseInt(in.readLine());
+        int cuisineType = Integer.parseInt(in.readLine());
+        int isSweetTooth = Integer.parseInt(in.readLine());
+        String userId = user.getEmployeeId();
+
+        Database.updateProfile(dietaryPreference, spiceLevel, cuisineType, isSweetTooth, userId);
+        out.println("Item fetched successfully");
     }
 }

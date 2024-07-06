@@ -29,6 +29,7 @@ public class Employee extends User {
         System.out.println("Vote - Vote for the Item for Next day");
         System.out.println("Feedback - Give feedback for the Item");
         System.out.println("Notification - View Today's Notification");
+        System.out.println("Profile - Create/Update Profile");
         System.out.print("Enter command: ");
     }
 
@@ -38,7 +39,8 @@ public class Employee extends User {
         return command;
     }
 
-    private static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
+    private static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in)
+            throws IOException {
         switch (command.toLowerCase()) {
             case "dailymenuitem":
                 handleResponse(in);
@@ -51,6 +53,9 @@ public class Employee extends User {
                 break;
             case "notification":
                 handleResponse(in);
+                break;
+            case "profile":
+                handleProfile(scanner, out, in);
                 break;
             default:
                 System.out.println("Unknown command");
@@ -80,6 +85,33 @@ public class Employee extends User {
         out.println(scanner.nextLine());
         System.out.print("Enter item comment: ");
         out.println(scanner.nextLine());
+        handleResponse(in);
+    }
+
+    private static void handleProfile(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
+        System.out.print("Please select one: \n" +
+                "1. Vegetarian \n" +
+                "2. Non-Vegetarian \n" +
+                "3. Eggetarian \n");
+        out.println(scanner.nextLine());
+
+        System.out.print("Please select your spice level: \n" +
+                "1. High \n" +
+                "2. Medium \n" +
+                "3. Low \n");
+        out.println(scanner.nextLine());
+
+        System.out.print("What do you prefer most?\n" +
+                "1. North Indian \n" +
+                "2. South Indian \n" +
+                "3. Other \n");
+        out.println(scanner.nextLine());
+
+        System.out.print("Do you have a sweet tooth? \n" +
+                "1.Yes \n" +
+                "2. No \n");
+        out.println(scanner.nextLine());
+
         handleResponse(in);
     }
 }

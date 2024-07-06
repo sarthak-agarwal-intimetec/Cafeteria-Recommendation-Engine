@@ -1,13 +1,25 @@
 package src.main.java.com.cafeteria;
+
 public class User {
     private String employeeId;
     private String name;
     private String role;
+    private String dietaryPreference;
+    private String spiceLevel;
+    private String cuisineType;
+    private String isSweetTooth;
 
     public User(String employeeId, String name, String role) {
         this.employeeId = employeeId;
         this.name = name;
         this.role = role;
+    }
+
+    public User(String dietaryPreference, String spiceLevel, String cuisineType, String isSweetTooth) {
+        this.dietaryPreference = dietaryPreference;
+        this.spiceLevel = spiceLevel;
+        this.cuisineType = cuisineType;
+        this.isSweetTooth = isSweetTooth;
     }
 
     public String getEmployeeId() {
@@ -22,11 +34,24 @@ public class User {
         return role;
     }
 
+    public String getDietaryPreference() {
+        return dietaryPreference;
+    }
+
+    public String getSpiceLevel() {
+        return spiceLevel;
+    }
+
+    public String getCuisineType() {
+        return cuisineType;
+    }
+
+    public String getIsSweetTooth() {
+        return isSweetTooth;
+    }
+
     public boolean login(String employeeId, String name) {
-        // Validate user credentials by checking with the database
-        //System.out.println("Inside Login of User");
         boolean isValidUser = Database.validateUser(employeeId, name);
-        //System.out.println("Validation result: " + isValidUser);
         return isValidUser;
     }
 }

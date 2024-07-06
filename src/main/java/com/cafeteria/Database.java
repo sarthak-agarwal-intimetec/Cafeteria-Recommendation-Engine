@@ -42,11 +42,10 @@ public class Database {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new MenuItem(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getBoolean("isAvailable")
-                    );
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getDouble("price"),
+                            rs.getBoolean("isAvailable"));
                 }
             }
         } catch (SQLException e) {
@@ -58,14 +57,15 @@ public class Database {
     public static List<MenuItem> getAllMenuItems() {
         String query = "SELECT * FROM MenuItems";
         List<MenuItem> menuItems = new ArrayList<>();
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 menuItems.add(new MenuItem(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getDouble("price"),
-                    rs.getBoolean("isAvailable")
-                ));
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getBoolean("isAvailable")));
             }
         } catch (SQLException e) {
             handleSQLException(e);
@@ -126,16 +126,17 @@ public class Database {
     public static List<Feedback> getFeedbacks() {
         String query = "SELECT * FROM Feedbacks";
         List<Feedback> feedbacks = new ArrayList<>();
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 feedbacks.add(new Feedback(
-                    rs.getInt("id"),
-                    rs.getString("comment"),
-                    rs.getInt("rating"),
-                    rs.getDate("feedbackDate"),
-                    rs.getInt("itemId"),
-                    rs.getString("userId")
-                ));
+                        rs.getInt("id"),
+                        rs.getString("comment"),
+                        rs.getInt("rating"),
+                        rs.getDate("feedbackDate"),
+                        rs.getInt("itemId"),
+                        rs.getString("userId")));
             }
         } catch (SQLException e) {
             handleSQLException(e);
@@ -153,20 +154,29 @@ public class Database {
         }
     }
 
-    public static List<DailyMenuItem> getDailyMenuItems() {
+    public static List<DailyMenuItem> getDailyMenuItems(User user) {
         String query = "SELECT d.id, d.date, d.itemId, m.averageRating, m.sentiment " +
-                       "FROM DailyMenuItem d " +
-                       "INNER JOIN MenuItems m ON d.itemId = m.id";
+                "FROM DailyMenuItem d " +
+                "INNER JOIN MenuItems m ON d.itemId = m.id " +
+                "ORDER BY " +
+                "CASE WHEN m.DietaryPreference = ? THEN 1 ELSE 0 END DESC, " +
+                "CASE WHEN m.SpiceLevel = ? THEN 1 ELSE 0 END DESC, " +
+                "CASE WHEN m.CuisineType = ? THEN 1 ELSE 0 END DESC, " +
+                "CASE WHEN m.SweetTooth = ? THEN 1 ELSE 0 END DESC";
         List<DailyMenuItem> dailyMenuItems = new ArrayList<>();
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getDietaryPreference());
+            stmt.setString(2, user.getSpiceLevel());
+            stmt.setString(3, user.getCuisineType());
+            stmt.setString(4, user.getIsSweetTooth());
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 dailyMenuItems.add(new DailyMenuItem(
-                    rs.getInt("d.id"),
-                    rs.getDate("d.date"),
-                    rs.getInt("d.itemId"),
-                    rs.getDouble("m.averageRating"),
-                    rs.getString("m.sentiment")
-                ));
+                        rs.getInt("d.id"),
+                        rs.getDate("d.date"),
+                        rs.getInt("d.itemId"),
+                        rs.getDouble("m.averageRating"),
+                        rs.getString("m.sentiment")));
             }
         } catch (SQLException e) {
             handleSQLException(e);
@@ -234,13 +244,14 @@ public class Database {
     public static List<Notification> getNotifications() {
         String query = "SELECT * FROM Notifications WHERE DATE(`timestamp`) = CURDATE()";
         List<Notification> notifications = new ArrayList<>();
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 notifications.add(new Notification(
-                    rs.getInt("id"),
-                    rs.getString("message"),
-                    rs.getTimestamp("timestamp")
-                ));
+                        rs.getInt("id"),
+                        rs.getString("message"),
+                        rs.getTimestamp("timestamp")));
             }
         } catch (SQLException e) {
             handleSQLException(e);
@@ -251,10 +262,13 @@ public class Database {
     public static void updateDiscardMenuItemList(RecommendationEngine recommendationEngine) {
         String deleteQuery = "DELETE FROM DiscardMenuItem";
         String insertQuery = "INSERT INTO DiscardMenuItem (itemId) VALUES (?)";
-        try (Connection conn = getConnection(); PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery); PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+        try (Connection conn = getConnection();
+                PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
+                PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
             deleteStmt.executeUpdate();
             for (Integer itemId : recommendationEngine.getItemFeedbackSentiments().keySet()) {
-                if (recommendationEngine.getItemRatings().get(itemId) < 2 && recommendationEngine.getItemFeedbackSentiments().get(itemId) == "Negative") {
+                if (recommendationEngine.getItemRatings().get(itemId) < 2
+                        && recommendationEngine.getItemFeedbackSentiments().get(itemId) == "Negative") {
                     insertStmt.setInt(1, itemId);
                     insertStmt.executeUpdate();
                 }
@@ -267,12 +281,13 @@ public class Database {
     public static List<DiscardMenuItem> getDiscardMenuItems() {
         String query = "SELECT * FROM DiscardMenuItem";
         List<DiscardMenuItem> discardMenuItems = new ArrayList<>();
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 discardMenuItems.add(new DiscardMenuItem(
-                    rs.getInt("id"),
-                    rs.getInt("itemId")
-                ));
+                        rs.getInt("id"),
+                        rs.getInt("itemId")));
             }
         } catch (SQLException e) {
             handleSQLException(e);
@@ -288,6 +303,41 @@ public class Database {
         } catch (SQLException e) {
             handleSQLException(e);
         }
+    }
+
+    public static void updateProfile(Integer dietaryPreference, Integer spiceLevel, Integer cuisineType,
+            Integer isSweetTooth, String userId) {
+        String query = "UPDATE Users SET dietaryPreference = ?, spiceLevel = ?, cuisineType = ?, sweetTooth = ? WHERE employeeId = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, Constant.dietaryPreferenceMap.get(dietaryPreference));
+            stmt.setString(2, Constant.spiceLeveleMap.get(spiceLevel));
+            stmt.setString(3, Constant.cuisineTypeMap.get(cuisineType));
+            stmt.setString(4, ((isSweetTooth == 1) ? "Yes" : "No"));
+            stmt.setString(5, userId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
+
+    public static User getUserPreferenceDetail(String employeedId) {
+        User user = null;
+        String query = "SELECT * FROM Users WHERE employeeId = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, employeedId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                user = new User(
+                        rs.getString("DietaryPreference"),
+                        rs.getString("SpiceLevel"),
+                        rs.getString("CuisineType"),
+                        rs.getString("SweetTooth"));
+            }
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+
+        return user;
     }
 
     private static void handleSQLException(SQLException e) {
