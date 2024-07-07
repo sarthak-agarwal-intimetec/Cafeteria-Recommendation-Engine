@@ -10,18 +10,19 @@ public class Client {
 
     public static void main(String[] args) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             Scanner scanner = new Scanner(System.in)) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                Scanner scanner = new Scanner(System.in)) {
 
-            String employeeId = getInput(scanner, "Enter Employee ID: ");
-            String name = getInput(scanner, "Enter Name: ");
+            while (true) {
+                String employeeId = getInput(scanner, "Enter Employee ID: ");
+                String name = getInput(scanner, "Enter Name: ");
 
-            authenticateUser(out, employeeId, name);
+                authenticateUser(out, employeeId, name);
 
-            String role = in.readLine();
-            handleServerResponse(in, scanner, out, role);
-
+                String role = in.readLine();
+                handleServerResponse(in, scanner, out, role);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,7 +38,8 @@ public class Client {
         out.println(name);
     }
 
-    private static void handleServerResponse(BufferedReader in, Scanner scanner, PrintWriter out, String role) throws IOException {
+    private static void handleServerResponse(BufferedReader in, Scanner scanner, PrintWriter out, String role)
+            throws IOException {
         String serverResponse = in.readLine();
         if (serverResponse != null) {
             System.out.println(serverResponse);
@@ -50,7 +52,8 @@ public class Client {
         }
     }
 
-    private static void showRoleCommands(Scanner scanner, PrintWriter out, BufferedReader in, String role) throws IOException {
+    private static void showRoleCommands(Scanner scanner, PrintWriter out, BufferedReader in, String role)
+            throws IOException {
         switch (role) {
             case "Admin":
                 Admin.showCommands(scanner, out, in);

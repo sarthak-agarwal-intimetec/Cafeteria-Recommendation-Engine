@@ -16,7 +16,9 @@ public class ClientHandler extends Thread {
     public void run() {
         try {
             initializeStreams();
-            handleClient();
+            while (true) {
+                handleClient();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -63,6 +65,9 @@ public class ClientHandler extends Thread {
     private void processCommands(User user) throws IOException {
         String command;
         while ((command = in.readLine()) != null) {
+            if(command.toLowerCase().equals("logout")){
+                break;
+            }
             handleCommand(user, command);
         }
     }
@@ -155,7 +160,7 @@ public class ClientHandler extends Thread {
     private void handleDeleteMenuItem() throws IOException {
         String itemIdToDelete = in.readLine();
         Database.deleteMenuItem(itemIdToDelete);
-        out.println("Item updated successfully");
+        out.println("Item Deleted successfully");
     }
 
     private void handleShowRecommendation() throws IOException {
@@ -186,13 +191,13 @@ public class ClientHandler extends Thread {
             out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId()
                     + " - " + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentiment());
         }
-        out.println("Item fetched successfully");
+        out.println("Item Fetched Succesfully");
     }
 
     private void handleVote() throws IOException {
         int itemIdToVote = Integer.parseInt(in.readLine());
         Database.updateVoteCount(itemIdToVote);
-        out.println("Item voted successfully");
+        out.println("Item Voted Successfully");
     }
 
     private void handleFeedback(User user) throws IOException {
@@ -202,7 +207,7 @@ public class ClientHandler extends Thread {
         String userId = user.getEmployeeId();
 
         Database.addFeedback(itemIdForFeedback, itemRating, itemComment, userId);
-        out.println("Item feedbacked successfully");
+        out.println("Item Feedbacked Successfully");
     }
 
     private void handleNotification() throws IOException {
@@ -210,7 +215,7 @@ public class ClientHandler extends Thread {
         for (Notification notification : notifications) {
             out.println(notification.getTimestamp() + " - " + notification.getMessage());
         }
-        out.println("Item fetched successfully");
+        out.println("Notification Fetched Succesfully");
     }
 
     private void handleViewDiscardMenuItem() throws IOException {
@@ -225,7 +230,7 @@ public class ClientHandler extends Thread {
         String itemIdToRemove = in.readLine();
         Database.deleteMenuItem(itemIdToRemove);
         Database.removeDiscardMenuItem(itemIdToRemove);
-        out.println("Item updated successfully");
+        out.println("Item Deleted successfully");
     }
 
     private void handleDiscardMenuItemNotification() throws IOException {

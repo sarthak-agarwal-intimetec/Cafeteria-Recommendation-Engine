@@ -120,7 +120,7 @@ public class Database {
         } catch (SQLException e) {
             handleSQLException(e);
         }
-        return null;
+        return "";
     }
 
     public static List<Feedback> getFeedbacks() {
@@ -158,6 +158,7 @@ public class Database {
         String query = "SELECT d.id, d.date, d.itemId, m.averageRating, m.sentiment " +
                 "FROM DailyMenuItem d " +
                 "INNER JOIN MenuItems m ON d.itemId = m.id " +
+                "WHERE d.Date = CURDATE()" +
                 "ORDER BY " +
                 "CASE WHEN m.DietaryPreference = ? THEN 1 ELSE 0 END DESC, " +
                 "CASE WHEN m.SpiceLevel = ? THEN 1 ELSE 0 END DESC, " +

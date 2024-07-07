@@ -14,8 +14,11 @@ public class Employee extends User {
     public static void showCommands(Scanner scanner, PrintWriter out, BufferedReader in) {
         try {
             while (true) {
-                displayMenu();
-                String command = getUserInput(scanner, out);
+                displayCommands();
+                String command = getUserInput(scanner, out, "Enter command: ");
+                if (!command.isBlank() && command.toLowerCase().equals("logout")) {
+                    break;
+                }
                 processCommand(command, scanner, out, in);
             }
         } catch (IOException e) {
@@ -23,27 +26,28 @@ public class Employee extends User {
         }
     }
 
-    private static void displayMenu() {
+    private static void displayCommands() {
         System.out.println("Commands: ");
         System.out.println("DailyMenuItem - Display items rolled out by chef");
         System.out.println("Vote - Vote for the Item for Next day");
         System.out.println("Feedback - Give feedback for the Item");
         System.out.println("Notification - View Today's Notification");
         System.out.println("Profile - Create/Update Profile");
-        System.out.print("Enter command: ");
+        System.out.println("Logout - Logout");
     }
 
-    private static String getUserInput(Scanner scanner, PrintWriter out) {
-        String command = scanner.nextLine();
-        out.println(command);
-        return command;
+    private static String getUserInput(Scanner scanner, PrintWriter out, String prompt) {
+        System.out.print(prompt);
+        String input = scanner.nextLine();
+        out.println(input);
+        return input;
     }
 
     private static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in)
             throws IOException {
         switch (command.toLowerCase()) {
             case "dailymenuitem":
-                handleResponse(in);
+                handleViewDailyMenuItem(in);
                 break;
             case "vote":
                 handleVote(scanner, out, in);
@@ -52,7 +56,7 @@ public class Employee extends User {
                 handleFeedback(scanner, out, in);
                 break;
             case "notification":
-                handleResponse(in);
+                handleViewNotification(in);
                 break;
             case "profile":
                 handleProfile(scanner, out, in);
@@ -62,56 +66,55 @@ public class Employee extends User {
         }
     }
 
-    private static void handleResponse(BufferedReader in) throws IOException {
-        String response;
-        while ((response = in.readLine()) != null) {
-            System.out.println(response);
-            if (response.equals("Item fetched successfully") || response.equals("Unknown command")) {
-                break;
-            }
-        }
+    private static void handleViewDailyMenuItem(BufferedReader in) throws IOException {
+        handleServerResponse(in, "Item Fetched Succesfully");
     }
 
     private static void handleVote(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
-        System.out.print("Enter item Id: ");
-        out.println(scanner.nextLine());
-        handleResponse(in);
+        getUserInput(scanner, out, "Enter item Id: ");
+
+        handleServerResponse(in, "Item Voted Successfully");
     }
 
     private static void handleFeedback(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
-        System.out.print("Enter item Id: ");
-        out.println(scanner.nextLine());
-        System.out.print("Enter item rating: ");
-        out.println(scanner.nextLine());
-        System.out.print("Enter item comment: ");
-        out.println(scanner.nextLine());
-        handleResponse(in);
+        getUserInput(scanner, out, "Enter item Id: ");
+        getUserInput(scanner, out, "Enter item rating: ");
+        getUserInput(scanner, out, "Enter item comment: ");
+
+        handleServerResponse(in, "Item Feedbacked Successfully");
+    }
+
+    private static void handleViewNotification(BufferedReader in) throws IOException {
+        handleServerResponse(in, "Notification Fetched Succesfully");
     }
 
     private static void handleProfile(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
-        System.out.print("Please select one: \n" +
+        getUserInput(scanner, out, "Please select one: \n" +
                 "1. Vegetarian \n" +
                 "2. Non-Vegetarian \n" +
                 "3. Eggetarian \n");
-        out.println(scanner.nextLine());
-
-        System.out.print("Please select your spice level: \n" +
+        getUserInput(scanner, out, "Please select your spice level: \n" +
                 "1. High \n" +
                 "2. Medium \n" +
                 "3. Low \n");
-        out.println(scanner.nextLine());
-
-        System.out.print("What do you prefer most?\n" +
+        getUserInput(scanner, out, "What do you prefer most?\n" +
                 "1. North Indian \n" +
                 "2. South Indian \n" +
                 "3. Other \n");
-        out.println(scanner.nextLine());
-
-        System.out.print("Do you have a sweet tooth? \n" +
+        getUserInput(scanner, out, "Do you have a sweet tooth? \n" +
                 "1.Yes \n" +
                 "2. No \n");
-        out.println(scanner.nextLine());
 
-        handleResponse(in);
+        handleServerResponse(in, "Profile Updated Succesfully");
+    }
+
+    private static void handleServerResponse(BufferedReader in, String successMessage) throws IOException {
+        String response = "";
+        while ((response = in.readLine()) != null) {
+            System.out.println(response);
+            if (!response.isBlank() && (response.equalsIgnoreCase(successMessage) || response.equalsIgnoreCase("Unknown command"))) {
+                break;
+            }
+        }
     }
 }
