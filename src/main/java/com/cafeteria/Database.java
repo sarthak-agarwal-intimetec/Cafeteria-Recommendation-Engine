@@ -22,7 +22,7 @@ public class Database {
     }
 
     public static boolean validateUser(String employeeId, String name) {
-        String query = "SELECT * FROM Users WHERE employeeId = ? AND name = ?";
+        String query = "SELECT * FROM User WHERE employeeId = ? AND name = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, employeeId);
             stmt.setString(2, name);
@@ -36,7 +36,7 @@ public class Database {
     }
 
     public static MenuItem getMenuItemById(String itemId) {
-        String query = "SELECT * FROM MenuItems WHERE id = ?";
+        String query = "SELECT * FROM MenuItem WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, itemId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -55,7 +55,7 @@ public class Database {
     }
 
     public static List<MenuItem> getAllMenuItems() {
-        String query = "SELECT * FROM MenuItems";
+        String query = "SELECT * FROM MenuItem";
         List<MenuItem> menuItems = new ArrayList<>();
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query);
@@ -74,7 +74,7 @@ public class Database {
     }
 
     public static void addMenuItem(String itemName, double itemPrice, String itemIsAvailable) {
-        String query = "INSERT INTO MenuItems (name, price, isAvailable) VALUES(?, ?, ?)";
+        String query = "INSERT INTO MenuItem (name, price, isAvailable) VALUES(?, ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, itemName);
             stmt.setDouble(2, itemPrice);
@@ -86,7 +86,7 @@ public class Database {
     }
 
     public static void updateMenuItem(String itemId, String itemName, double itemPrice, String itemIsAvailable) {
-        String query = "UPDATE MenuItems SET name = ?, price = ?, isAvailable = ? WHERE id = ?";
+        String query = "UPDATE MenuItem SET name = ?, price = ?, isAvailable = ? WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, itemName);
             stmt.setDouble(2, itemPrice);
@@ -99,7 +99,7 @@ public class Database {
     }
 
     public static void deleteMenuItem(String itemId) {
-        String query = "DELETE FROM MenuItems WHERE id = ?";
+        String query = "DELETE FROM MenuItem WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, itemId);
             stmt.executeUpdate();
@@ -109,7 +109,7 @@ public class Database {
     }
 
     public static String getUserRole(String employeeId) {
-        String query = "SELECT role FROM Users WHERE employeeId = ?";
+        String query = "SELECT role FROM User WHERE employeeId = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, employeeId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -124,7 +124,7 @@ public class Database {
     }
 
     public static List<Feedback> getFeedbacks() {
-        String query = "SELECT * FROM Feedbacks";
+        String query = "SELECT * FROM Feedback";
         List<Feedback> feedbacks = new ArrayList<>();
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query);
@@ -157,7 +157,7 @@ public class Database {
     public static List<DailyMenuItem> getDailyMenuItems(User user) {
         String query = "SELECT d.id, d.date, d.itemId, m.averageRating, m.sentiment " +
                 "FROM DailyMenuItem d " +
-                "INNER JOIN MenuItems m ON d.itemId = m.id " +
+                "INNER JOIN MenuItem m ON d.itemId = m.id " +
                 "WHERE d.Date = CURDATE()" +
                 "ORDER BY " +
                 "CASE WHEN m.DietaryPreference = ? THEN 1 ELSE 0 END DESC, " +
@@ -186,7 +186,7 @@ public class Database {
     }
 
     public static void updateRatingSentiment(RecommendationEngine recommendationEngine) {
-        String query = "UPDATE MenuItems SET sentiment = ?, averageRating = ? WHERE id = ?";
+        String query = "UPDATE MenuItem SET sentiment = ?, averageRating = ? WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             for (Integer itemId : recommendationEngine.getItemFeedbackSentiments().keySet()) {
                 stmt.setString(1, recommendationEngine.getItemFeedbackSentiments().get(itemId));
@@ -220,7 +220,7 @@ public class Database {
     }
 
     public static void addFeedback(int itemIdForFeedback, int itemRating, String itemComment, String userId) {
-        String query = "INSERT INTO Feedbacks (itemId, rating, comment, userId, feedbackDate) VALUES (?, ?, ?, ?, CURDATE() - 1)";
+        String query = "INSERT INTO Feedback (itemId, rating, comment, userId, feedbackDate) VALUES (?, ?, ?, ?, CURDATE() - 1)";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, itemIdForFeedback);
             stmt.setInt(2, itemRating);
@@ -233,7 +233,7 @@ public class Database {
     }
 
     public static void addNotification(String message) {
-        String query = "INSERT INTO Notifications (message) VALUES (?)";
+        String query = "INSERT INTO Notification (message) VALUES (?)";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, message);
             stmt.executeUpdate();
@@ -243,7 +243,7 @@ public class Database {
     }
 
     public static List<Notification> getNotifications() {
-        String query = "SELECT * FROM Notifications WHERE DATE(`timestamp`) = CURDATE()";
+        String query = "SELECT * FROM Notification WHERE DATE(`timestamp`) = CURDATE()";
         List<Notification> notifications = new ArrayList<>();
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query);
@@ -308,7 +308,7 @@ public class Database {
 
     public static void updateProfile(Integer dietaryPreference, Integer spiceLevel, Integer cuisineType,
             Integer isSweetTooth, String userId) {
-        String query = "UPDATE Users SET dietaryPreference = ?, spiceLevel = ?, cuisineType = ?, sweetTooth = ? WHERE employeeId = ?";
+        String query = "UPDATE User SET dietaryPreference = ?, spiceLevel = ?, cuisineType = ?, sweetTooth = ? WHERE employeeId = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, Constant.dietaryPreferenceMap.get(dietaryPreference));
             stmt.setString(2, Constant.spiceLeveleMap.get(spiceLevel));
@@ -323,7 +323,7 @@ public class Database {
 
     public static User getUserPreferenceDetail(String employeedId) {
         User user = null;
-        String query = "SELECT * FROM Users WHERE employeeId = ?";
+        String query = "SELECT * FROM User WHERE employeeId = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, employeedId);
             ResultSet rs = stmt.executeQuery();
