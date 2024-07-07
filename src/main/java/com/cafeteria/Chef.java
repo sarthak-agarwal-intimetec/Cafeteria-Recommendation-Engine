@@ -68,8 +68,7 @@ public class Chef extends User {
     }
 
     private static void handleRollOutMenu(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
-        String itemNumber = getUserInput(scanner, out, "Enter item number for next day: ");
-        out.println(itemNumber);
+        getUserInput(scanner, out, "Enter item number for next day: ");
 
         handleServerResponse(in, "Item added successfully");
     }
@@ -80,16 +79,14 @@ public class Chef extends User {
 
     private static void handleRemoveDiscardMenuItem(Scanner scanner, PrintWriter out, BufferedReader in)
             throws IOException {
-        String itemId = getUserInput(scanner, out, "Enter item Id: ");
-        out.println(itemId);
+        getUserInput(scanner, out, "Enter item Id: ");
 
         handleServerResponse(in, "Item Deleted successfully");
     }
 
     private static void handleDiscardMenuItemNotification(Scanner scanner, PrintWriter out, BufferedReader in)
             throws IOException {
-        String itemId = getUserInput(scanner, out, "Enter item Id: ");
-        out.println(itemId);
+        getUserInput(scanner, out, "Enter item Id: ");
 
         handleServerResponse(in, "Notification sent successfully");
     }
@@ -98,7 +95,8 @@ public class Chef extends User {
         String response = "";
         while ((response = in.readLine()) != null) {
             System.out.println(response);
-            if (!response.isBlank() && (response.equalsIgnoreCase(successMessage) || response.equalsIgnoreCase("Unknown command"))) {
+            if (!response.isBlank()
+                    && (response.equalsIgnoreCase(successMessage) || response.equalsIgnoreCase("Unknown command"))) {
                 break;
             }
         }

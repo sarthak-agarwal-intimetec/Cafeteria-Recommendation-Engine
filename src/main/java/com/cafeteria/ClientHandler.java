@@ -43,6 +43,7 @@ public class ClientHandler extends Thread {
 
         if (user != null && user.login(employeeId, name)) {
             out.println("Login successful as " + user.getRole());
+            Database.addLoginActivity(user.getEmployeeId(), "Logged in");
             processCommands(user);
         } else {
             out.println("Invalid credentials");
@@ -65,10 +66,12 @@ public class ClientHandler extends Thread {
     private void processCommands(User user) throws IOException {
         String command;
         while ((command = in.readLine()) != null) {
-            if(command.toLowerCase().equals("logout")){
+            if (command.toLowerCase().equals("logout")) {
+                Database.addLoginActivity(user.getEmployeeId(), "Logged out");
                 break;
             }
             handleCommand(user, command);
+            Database.addLoginActivity(user.getEmployeeId(), command);
         }
     }
 

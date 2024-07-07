@@ -124,7 +124,8 @@ public class Admin extends User {
         String response = "";
         while ((response = in.readLine()) != null) {
             System.out.println(response);
-            if (!response.isBlank() && (response.equalsIgnoreCase(successMessage) || response.equalsIgnoreCase("Unknown command"))) {
+            if (!response.isBlank()
+                    && (response.equalsIgnoreCase(successMessage) || response.equalsIgnoreCase("Unknown command"))) {
                 break;
             }
         }

@@ -341,6 +341,17 @@ public class Database {
         return user;
     }
 
+    public static void addLoginActivity(String userId, String activityMessage) {
+        String query = "INSERT INTO LoginActivity (userId, activityMessage) VALUES (?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, userId);
+            stmt.setString(2, activityMessage);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
+
     private static void handleSQLException(SQLException e) {
         e.printStackTrace();
         // Additional logging or error handling can be added here if needed
