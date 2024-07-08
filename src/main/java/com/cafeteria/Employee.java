@@ -28,12 +28,12 @@ public class Employee extends User {
 
     private static void displayCommands() {
         System.out.println("Commands: ");
-        System.out.println("DailyMenuItem - Display items rolled out by chef");
-        System.out.println("Vote - Vote for the Item for Next day");
-        System.out.println("Feedback - Give feedback for the Item");
-        System.out.println("Notification - View Today's Notification");
-        System.out.println("Profile - Create/Update Profile");
-        System.out.println("Logout - Logout");
+        System.out.println("1 - Display items rolled out by chef");
+        System.out.println("2 - Vote for the Item for Next day");
+        System.out.println("3 - Give feedback for the Item");
+        System.out.println("4 - View Today's Notification");
+        System.out.println("5 - Create/Update Profile");
+        System.out.println("L - Logout");
     }
 
     private static String getUserInput(Scanner scanner, PrintWriter out, String prompt) {
@@ -46,19 +46,19 @@ public class Employee extends User {
     private static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in)
             throws IOException {
         switch (command.toLowerCase()) {
-            case "dailymenuitem":
+            case "1":
                 handleViewDailyMenuItem(in);
                 break;
-            case "vote":
+            case "2":
                 handleVote(scanner, out, in);
                 break;
-            case "feedback":
+            case "3":
                 handleFeedback(scanner, out, in);
                 break;
-            case "notification":
+            case "4":
                 handleViewNotification(in);
                 break;
-            case "profile":
+            case "5":
                 handleProfile(scanner, out, in);
                 break;
             default:

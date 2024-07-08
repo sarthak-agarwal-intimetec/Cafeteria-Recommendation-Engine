@@ -23,13 +23,13 @@ public class Chef extends User {
 
     private static void displayCommands() {
         System.out.println("Commands: ");
-        System.out.println("ShowRecommendation - Show Recommendation");
-        System.out.println("RollOutMenu - Roll Out Menu");
-        System.out.println("ViewDiscardMenuItem - View Discard Menu Item");
-        System.out.println("RemoveDiscardMenuItem - Delete Item in Discard Menu items");
+        System.out.println("1 - Show Recommendation");
+        System.out.println("2 - Roll Out Menu");
+        System.out.println("3 - View Discard Menu Item");
+        System.out.println("4 - Delete Item in Discard Menu items");
         System.out.println(
-                "DiscardMenuItemNotification - Send Notification to users to know more about improvements to be done for selected food item.");
-        System.out.println("Logout - Logout");
+                "5 - Send Notification to users to know more about improvements to be done for selected food item.");
+        System.out.println("L - Logout");
     }
 
     private static String getUserInput(Scanner scanner, PrintWriter out, String prompt) {
@@ -42,19 +42,19 @@ public class Chef extends User {
     private static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in)
             throws IOException {
         switch (command.toLowerCase()) {
-            case "showrecommendation":
+            case "1":
                 handleShowRecommendation(in);
                 break;
-            case "rolloutmenu":
+            case "2":
                 handleRollOutMenu(scanner, out, in);
                 break;
-            case "viewdiscardmenuitem":
+            case "3":
                 handleViewDiscardMenuItem(in);
                 break;
-            case "removediscardmenuitem":
+            case "4":
                 handleRemoveDiscardMenuItem(scanner, out, in);
                 break;
-            case "discardmenuitemnotification":
+            case "5":
                 handleDiscardMenuItemNotification(scanner, out, in);
                 break;
             default:

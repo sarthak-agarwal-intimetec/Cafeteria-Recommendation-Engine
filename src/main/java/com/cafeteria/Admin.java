@@ -28,15 +28,15 @@ public class Admin extends User {
 
     private static void displayCommands() {
         System.out.println("Commands: ");
-        System.out.println("ShowMenu - Show menu items");
-        System.out.println("AddMenuItem - Add menu items");
-        System.out.println("UpdateMenuItem - Update menu items");
-        System.out.println("DeleteMenuItem - Delete menu items");
-        System.out.println("ViewDiscardMenuItem - View Discard Menu Item");
-        System.out.println("RemoveDiscardMenuItem - Delete Item in Discard Menu items");
+        System.out.println("1 - Show menu items");
+        System.out.println("2 - Add menu items");
+        System.out.println("3 - Update menu items");
+        System.out.println("4 - Delete menu items");
+        System.out.println("5 - View Discard Menu Item");
+        System.out.println("6 - Delete Item in Discard Menu items");
         System.out.println(
-                "DiscardMenuItemNotification - Send Notification to users to know more about improvements to be done for selected food item.");
-        System.out.println("Logout - Logout");
+                "7 - Send Notification to users to know more about improvements to be done for selected food item.");
+        System.out.println("L - Logout");
     }
 
     private static String getUserInput(Scanner scanner, PrintWriter out, String prompt) {
@@ -49,25 +49,25 @@ public class Admin extends User {
     private static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in)
             throws IOException {
         switch (command.toLowerCase()) {
-            case "showmenu":
+            case "1":
                 handleShowMenu(in);
                 break;
-            case "addmenuitem":
+            case "2":
                 handleAddMenuItem(scanner, out, in);
                 break;
-            case "updatemenuitem":
+            case "3":
                 handleUpdateMenuItem(scanner, out, in);
                 break;
-            case "deletemenuitem":
+            case "4":
                 handleDeleteMenuItem(scanner, out, in);
                 break;
-            case "viewdiscardmenuitem":
+            case "5":
                 handleViewDiscardMenuItem(in);
                 break;
-            case "removediscardmenuitem":
+            case "6":
                 handleRemoveDiscardMenuItem(scanner, out, in);
                 break;
-            case "discardmenuitemnotification":
+            case "7":
                 handleDiscardMenuItemNotification(scanner, out, in);
                 break;
             default:
