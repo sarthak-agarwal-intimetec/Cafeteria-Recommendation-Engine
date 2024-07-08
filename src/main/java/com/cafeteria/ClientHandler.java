@@ -127,9 +127,10 @@ public class ClientHandler extends Thread {
 
     private void handleShowMenu() throws IOException {
         List<MenuItem> menuItems = Database.getAllMenuItems();
+        out.printf("%-10s%-20s%-15s%-20s%n", "Id", "Name", "Price", "Availablity");
         for (MenuItem item : menuItems) {
-            out.println(item.getId() + ". " + item.getName() + " - " + item.getPrice() + " - "
-                    + (item.isAvailable() ? "Available" : "Not Available"));
+            out.printf("%-10d%-20s%-15.2f%-20s%n", item.getId(), item.getName(), item.getPrice(),
+                    (item.isAvailable() ? "Available" : "Not Available"));
         }
         out.println("Item fetched successfully");
     }
@@ -171,9 +172,11 @@ public class ClientHandler extends Thread {
         RecommendationEngine recommendationEngine = new RecommendationEngine(feedbacks);
         Database.updateRatingSentiment(recommendationEngine);
         Database.updateDiscardMenuItemList(recommendationEngine);
-        for (Integer itemId : recommendationEngine.itemRatings.keySet()) {
-            out.println(itemId + " - Ratings - " + (recommendationEngine.itemRatings.get(itemId) + ", Feedback - "
-                    + recommendationEngine.itemFeedbackSentiments.get(itemId)));
+        out.printf("%-10s%-20s%-20s%-20s%n", "Item Id", "Item Name", "Average Rating", "Feedback");
+        for (Integer itemId : recommendationEngine.itemIdToItemNameMap.keySet()) {
+            out.printf("%-10d%-20s%-20.2f%-20s%n", itemId, recommendationEngine.itemIdToItemNameMap.get(itemId),
+                    recommendationEngine.itemRatings.get(itemId),
+                    recommendationEngine.itemFeedbackSentiments.get(itemId));
         }
         out.println("Item fetched successfully");
     }
@@ -190,9 +193,10 @@ public class ClientHandler extends Thread {
     private void handleDailyMenuItem(User user) throws IOException {
         User userDetail = Database.getUserPreferenceDetail(user.getEmployeeId());
         List<DailyMenuItem> dailyMenuItems = Database.getDailyMenuItems(userDetail);
+        out.printf("%-10s%-20s%-20s%-20s%n", "Item Id", "Item Name", "Average Rating", "Feedback");
         for (DailyMenuItem dailyMenuItem : dailyMenuItems) {
-            out.println(dailyMenuItem.getId() + ". " + dailyMenuItem.getDate() + " - " + dailyMenuItem.getItemId()
-                    + " - " + dailyMenuItem.getAverageRating() + " - " + dailyMenuItem.getSentiment());
+            out.printf("%-10d%-20s%-20.2f%-20s%n", dailyMenuItem.getItemId(), dailyMenuItem.getItemName(),
+                    dailyMenuItem.getAverageRating(), dailyMenuItem.getSentiment());
         }
         out.println("Item Fetched Succesfully");
     }
@@ -215,16 +219,18 @@ public class ClientHandler extends Thread {
 
     private void handleNotification() throws IOException {
         List<Notification> notifications = Database.getNotifications();
+        out.printf("%-100s%-10s%n", "Message", "Time");
         for (Notification notification : notifications) {
-            out.println(notification.getTimestamp() + " - " + notification.getMessage());
+            out.printf("%-100s%-20s%n", notification.getMessage(), notification.getTimestamp());
         }
         out.println("Notification Fetched Succesfully");
     }
 
     private void handleViewDiscardMenuItem() throws IOException {
         List<DiscardMenuItem> discardMenuItems = Database.getDiscardMenuItems();
+        out.printf("%-10s%-20s%n", "Item Id", "Item Name");
         for (DiscardMenuItem discardMenuItem : discardMenuItems) {
-            out.println(discardMenuItem.getId() + " - " + discardMenuItem.getItemId());
+            out.printf("%-10d%-20s%n", discardMenuItem.getItemId(), discardMenuItem.getItemName());
         }
         out.println("Item fetched successfully");
     }
@@ -232,7 +238,6 @@ public class ClientHandler extends Thread {
     private void handleRemoveDiscardMenuItem() throws IOException {
         String itemIdToRemove = in.readLine();
         Database.deleteMenuItem(itemIdToRemove);
-        Database.removeDiscardMenuItem(itemIdToRemove);
         out.println("Item Deleted successfully");
     }
 

@@ -9,14 +9,16 @@ public class RecommendationEngine {
     public Map<Integer, Double> itemRatings;
     private Map<Integer, Double> itemRatingCounts;
     private Map<Integer, Double> itemRatingScores;
+    public Map<Integer, String> itemIdToItemNameMap;
 
     public RecommendationEngine(List<Feedback> feedbacks) {
         this.feedbacks = feedbacks;
         this.itemFeedbacks = new HashMap<>();
-        this.itemFeedbackSentiments =  new HashMap<>();
+        this.itemFeedbackSentiments = new HashMap<>();
         this.itemRatings = new HashMap<>();
         this.itemRatingCounts = new HashMap<>();
         this.itemRatingScores = new HashMap<>();
+        this.itemIdToItemNameMap = new HashMap<>();
         analyzeFeedbacks();
         calculateAverageRatings();
     }
@@ -30,7 +32,7 @@ public class RecommendationEngine {
             int negativeScore = 0;
             boolean negation = false;
 
-            for(String word : words) {
+            for (String word : words) {
                 String lowerCaseWord = word.toLowerCase();
 
                 if (NegationWords.contains(lowerCaseWord)) {
@@ -62,10 +64,10 @@ public class RecommendationEngine {
             }
         }
 
-        for(Integer itemId : itemFeedbacks.keySet()) {
-            if(itemFeedbacks.get(itemId) > 0) {
+        for (Integer itemId : itemFeedbacks.keySet()) {
+            if (itemFeedbacks.get(itemId) > 0) {
                 itemFeedbackSentiments.put(itemId, "Postive");
-            } else if(itemFeedbacks.get(itemId) < 0) {
+            } else if (itemFeedbacks.get(itemId) < 0) {
                 itemFeedbackSentiments.put(itemId, "Negative");
             } else {
                 itemFeedbackSentiments.put(itemId, "Neutral");
@@ -77,6 +79,8 @@ public class RecommendationEngine {
     private void calculateAverageRatings() {
         for (Feedback feedback : feedbacks) {
             int itemId = feedback.getItemId();
+            itemIdToItemNameMap.putIfAbsent(itemId, feedback.getItemName());
+
             itemRatingScores.putIfAbsent(itemId, 0.0);
             itemRatingScores.put(itemId, itemRatingScores.get(itemId) + feedback.getRating());
 
@@ -103,20 +107,19 @@ public class RecommendationEngine {
 
 class PositiveWords {
     private static final List<String> POSITIVE_WORDS = Arrays.asList(
-        "Delicious", "Tasty", "Savory", "Flavorful", "Appetizing", 
-        "Delectable", "Scrumptious", "Yummy", "Mouthwatering", "Luscious", 
-        "Succulent", "Exquisite", "Heavenly", "Tempting", "Gourmet", "Rich", 
-        "Satisfying", "Juicy", "Nutritious", "Fresh", "Aromatic", "Zesty", 
-        "Flavor-packed", "Divine", "Tantalizing", "Lip-smacking", "Indulgent", 
-        "Gratifying", "Delightful", "Palatable", "Bursting with flavor", 
-        "Sumptuous", "Decadent", "Mouth-filling", "Melt-in-your-mouth", "Irresistible", 
-        "Crispy", "Tender", "Velvety", "Bright", "Fragrant", "Clean", "Comforting", 
-        "Homemade", "Authentic", "Freshly baked", "Wholesome", "Energizing", 
-        "Nourishing", "Excellent", "Outstanding", "Superb", "Fantastic", "Brilliant",
-        "Exceptional", "Impressive", "Marvelous", "Remarkable", "Wonderful", 
-        "Great", "Amazing", "Terrific", "Fabulous", "Awesome", "Stellar", "Extraordinary",
-        "Magnificent", "Perfect", "Commendable", "good"
-    );
+            "Delicious", "Tasty", "Savory", "Flavorful", "Appetizing",
+            "Delectable", "Scrumptious", "Yummy", "Mouthwatering", "Luscious",
+            "Succulent", "Exquisite", "Heavenly", "Tempting", "Gourmet", "Rich",
+            "Satisfying", "Juicy", "Nutritious", "Fresh", "Aromatic", "Zesty",
+            "Flavor-packed", "Divine", "Tantalizing", "Lip-smacking", "Indulgent",
+            "Gratifying", "Delightful", "Palatable", "Bursting with flavor",
+            "Sumptuous", "Decadent", "Mouth-filling", "Melt-in-your-mouth", "Irresistible",
+            "Crispy", "Tender", "Velvety", "Bright", "Fragrant", "Clean", "Comforting",
+            "Homemade", "Authentic", "Freshly baked", "Wholesome", "Energizing",
+            "Nourishing", "Excellent", "Outstanding", "Superb", "Fantastic", "Brilliant",
+            "Exceptional", "Impressive", "Marvelous", "Remarkable", "Wonderful",
+            "Great", "Amazing", "Terrific", "Fabulous", "Awesome", "Stellar", "Extraordinary",
+            "Magnificent", "Perfect", "Commendable", "good");
 
     public static boolean contains(String word) {
         return POSITIVE_WORDS.contains(word);
@@ -125,19 +128,18 @@ class PositiveWords {
 
 class NegativeWords {
     private static final List<String> NEGATIVE_WORDS = Arrays.asList(
-        "Poor", "Disappointing", "Unsatisfactory", "Inadequate", "Subpar", 
-        "Mediocre", "Lacking", "Unacceptable", "Deficient", "Inferior", "Weak", 
-        "Flawed", "Ineffective", "Insufficient", "Dismal", "Unimpressive", 
-        "Below standard", "Troubling", "Frustrating", "Incomplete", "Bland", 
-        "Tasteless", "Soggy", "Stale", "Rancid", "Greasy", "Unappetizing", 
-        "Mushy", "Watery", "Overcooked", "Undercooked", "Burnt", "Sour", 
-        "Rotten", "Spoiled", "Unpleasant", "Bitter", "Salty", "Dry", "Tough", 
-        "Chewy", "Gritty", "Fatty", "Artificial", "Frozen", "Processed", "Stodgy", 
-        "Heavy", "Unhealthy", "Unpalatable", "Flat", "Stagnant", "Insipid", 
-        "Disappointing", "Mismatched", "Unbalanced", "Off-putting", "Uninspired", 
-        "Repulsive", "Sickening", "Stuffy", "Stifling", "Unappealing", "Stinky", 
-        "Dull", "Distasteful", "Unimaginative", "Fake", "Lacking", "Ordinary", "bad"
-    );
+            "Poor", "Disappointing", "Unsatisfactory", "Inadequate", "Subpar",
+            "Mediocre", "Lacking", "Unacceptable", "Deficient", "Inferior", "Weak",
+            "Flawed", "Ineffective", "Insufficient", "Dismal", "Unimpressive",
+            "Below standard", "Troubling", "Frustrating", "Incomplete", "Bland",
+            "Tasteless", "Soggy", "Stale", "Rancid", "Greasy", "Unappetizing",
+            "Mushy", "Watery", "Overcooked", "Undercooked", "Burnt", "Sour",
+            "Rotten", "Spoiled", "Unpleasant", "Bitter", "Salty", "Dry", "Tough",
+            "Chewy", "Gritty", "Fatty", "Artificial", "Frozen", "Processed", "Stodgy",
+            "Heavy", "Unhealthy", "Unpalatable", "Flat", "Stagnant", "Insipid",
+            "Disappointing", "Mismatched", "Unbalanced", "Off-putting", "Uninspired",
+            "Repulsive", "Sickening", "Stuffy", "Stifling", "Unappealing", "Stinky",
+            "Dull", "Distasteful", "Unimaginative", "Fake", "Lacking", "Ordinary", "bad");
 
     public static boolean contains(String word) {
         return NEGATIVE_WORDS.contains(word);
@@ -146,8 +148,7 @@ class NegativeWords {
 
 class NegationWords {
     private static final List<String> NEGATION_WORDS = Arrays.asList(
-        "not", "no", "never", "none"
-    );
+            "not", "no", "never", "none");
 
     public static boolean contains(String word) {
         return NEGATION_WORDS.contains(word);

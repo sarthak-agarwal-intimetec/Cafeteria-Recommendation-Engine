@@ -124,19 +124,20 @@ public class Database {
     }
 
     public static List<Feedback> getFeedbacks() {
-        String query = "SELECT * FROM Feedback";
+        String query = "SELECT f.id, f.comment, f.rating, f.feedbackDate, f.itemId, f.userId, m.name FROM Feedback f INNER JOIN MenuItem m ON f.itemId = m.id ";
         List<Feedback> feedbacks = new ArrayList<>();
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query);
                 ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 feedbacks.add(new Feedback(
-                        rs.getInt("id"),
-                        rs.getString("comment"),
-                        rs.getInt("rating"),
-                        rs.getDate("feedbackDate"),
-                        rs.getInt("itemId"),
-                        rs.getString("userId")));
+                        rs.getInt("f.id"),
+                        rs.getString("f.comment"),
+                        rs.getInt("f.rating"),
+                        rs.getDate("f.feedbackDate"),
+                        rs.getInt("f.itemId"),
+                        rs.getString("f.userId"),
+                        rs.getString("m.name")));
             }
         } catch (SQLException e) {
             handleSQLException(e);
@@ -155,7 +156,7 @@ public class Database {
     }
 
     public static List<DailyMenuItem> getDailyMenuItems(User user) {
-        String query = "SELECT d.id, d.date, d.itemId, m.averageRating, m.sentiment " +
+        String query = "SELECT d.id, d.date, d.itemId, m.name, m.averageRating, m.sentiment " +
                 "FROM DailyMenuItem d " +
                 "INNER JOIN MenuItem m ON d.itemId = m.id " +
                 "WHERE d.Date = CURDATE()" +
@@ -176,6 +177,7 @@ public class Database {
                         rs.getInt("d.id"),
                         rs.getDate("d.date"),
                         rs.getInt("d.itemId"),
+                        rs.getString("m.name"),
                         rs.getDouble("m.averageRating"),
                         rs.getString("m.sentiment")));
             }
@@ -280,30 +282,21 @@ public class Database {
     }
 
     public static List<DiscardMenuItem> getDiscardMenuItems() {
-        String query = "SELECT * FROM DiscardMenuItem";
+        String query = "SELECT d.id, d.itemId, m.name FROM DiscardMenuItem d INNER JOIN MenuItem m ON d.itemId = m.id";
         List<DiscardMenuItem> discardMenuItems = new ArrayList<>();
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query);
                 ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 discardMenuItems.add(new DiscardMenuItem(
-                        rs.getInt("id"),
-                        rs.getInt("itemId")));
+                        rs.getInt("d.id"),
+                        rs.getInt("d.itemId"),
+                        rs.getString("m.name")));
             }
         } catch (SQLException e) {
             handleSQLException(e);
         }
         return discardMenuItems;
-    }
-
-    public static void removeDiscardMenuItem(String itemId) {
-        String query = "DELETE FROM DiscardMenuItem WHERE id = ?";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, itemId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
     }
 
     public static void updateProfile(Integer dietaryPreference, Integer spiceLevel, Integer cuisineType,

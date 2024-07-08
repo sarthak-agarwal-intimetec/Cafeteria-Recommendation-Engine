@@ -7,10 +7,11 @@ public class DailyMenuItem {
     private final int id;
     private final Date date;
     private final int itemId;
+    private final String itemName;
     private final double averageRating;
     private final String sentiment;
 
-    public DailyMenuItem(int id, Date date, int itemId, double averageRating, String sentiment) {
+    public DailyMenuItem(int id, Date date, int itemId, String itemName, double averageRating, String sentiment) {
         if (id <= 0 || itemId <= 0) {
             throw new IllegalArgumentException("ID and Item ID must be positive.");
         }
@@ -20,6 +21,7 @@ public class DailyMenuItem {
         this.id = id;
         this.date = Objects.requireNonNull(date, "Date cannot be null");
         this.itemId = itemId;
+        this.itemName = itemName;
         this.averageRating = averageRating;
         this.sentiment = sentiment;
     }
@@ -34,6 +36,10 @@ public class DailyMenuItem {
 
     public int getItemId() {
         return itemId;
+    }
+
+    public String getItemName() {
+        return itemName;
     }
 
     public double getAverageRating() {
