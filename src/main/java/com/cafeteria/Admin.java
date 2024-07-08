@@ -15,7 +15,7 @@ public class Admin extends User {
             while (true) {
                 displayCommands();
                 String command = getUserInput(scanner, out, "Enter command: ");
-                if (!command.isBlank() && command.toLowerCase().equals("logout")) {
+                if (!command.isBlank() && command.toLowerCase().equals("l")) {
                     break;
                 }
                 processCommand(command, scanner, out, in);

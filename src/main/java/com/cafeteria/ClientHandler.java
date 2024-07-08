@@ -38,55 +38,36 @@ public class ClientHandler extends Thread {
 
         System.out.println("Received login request: " + userRole + ", " + employeeId + ", " + name);
 
-        User user = createUser(employeeId, name, userRole);
+        try {
+            User user = UserFactory.createUser(employeeId, name, userRole);
 
-        if (user != null && user.login(employeeId, name)) {
-            out.println("Login successful as " + user.getRole());
-            Database.addLoginActivity(user.getEmployeeId(), "Logged in");
-            processCommands(user);
-        } else {
-            out.println("Invalid credentials");
-        }
-    }
-
-    private User createUser(String employeeId, String name, String role) {
-        switch (role.toLowerCase()) {
-            case "admin":
-                return new Admin(employeeId, name, "Admin");
-            case "chef":
-                return new Chef(employeeId, name, "Chef");
-            case "employee":
-                return new Employee(employeeId, name, "Employee");
-            default:
-                return null;
+            if (user.login(employeeId, name)) {
+                out.println("Login successful as " + user.getRole());
+                Database.addLoginActivity(user.getEmployeeId(), "Logged in");
+                processCommands(user);
+            } else {
+                out.println("Invalid credentials");
+            }
+        } catch (IllegalArgumentException e) {
+            out.println(e.getMessage());
         }
     }
 
     private void processCommands(User user) throws IOException {
-        CommandHandler handler = createCommandHandler(user);
-
         String command;
         while ((command = in.readLine()) != null) {
             if (command.toLowerCase().equals("l")) {
                 Database.addLoginActivity(user.getEmployeeId(), "Logged out");
                 break;
             }
-            handler.handleCommand(command);
+            handleCommand(user, command);
             Database.addLoginActivity(user.getEmployeeId(), command);
         }
     }
 
-    private CommandHandler createCommandHandler(User user) {
-        switch (user.getRole().toLowerCase()) {
-            case "admin":
-                return new AdminCommandHandler(in, out, user);
-            case "chef":
-                return new ChefCommandHandler(in, out, user);
-            case "employee":
-                return new EmployeeCommandHandler(in, out, user);
-            default:
-                throw new IllegalArgumentException("Unknown role: " + user.getRole());
-        }
+    private void handleCommand(User user, String command) throws IOException {
+        CommandHandler commandHandler = CommandHandlerFactory.createCommandHandler(user, in, out);
+        commandHandler.handleCommand(command);
     }
 
     private void closeConnection() {
