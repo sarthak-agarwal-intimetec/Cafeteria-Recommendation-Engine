@@ -1,4 +1,4 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.command;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,8 +1,10 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.handler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import src.main.java.com.cafeteria.model.User;
 
 public abstract class CommandHandler {
     protected BufferedReader in;

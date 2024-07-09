@@ -1,7 +1,13 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.server;
 
 import java.io.*;
 import java.net.Socket;
+
+import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.factory.CommandHandlerFactory;
+import src.main.java.com.cafeteria.factory.UserFactory;
+import src.main.java.com.cafeteria.handler.CommandHandler;
+import src.main.java.com.cafeteria.model.User;
 
 public class ClientHandler extends Thread {
     private Socket socket;

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import src.main.java.com.cafeteria.model.User;
+
 public class Admin extends User {
     public Admin(String employeeId, String name, String role) {
         super(employeeId, name, role);

@@ -4,6 +4,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import src.main.java.com.cafeteria.model.DailyMenuItem;
+import src.main.java.com.cafeteria.model.DiscardMenuItem;
+import src.main.java.com.cafeteria.model.Feedback;
+import src.main.java.com.cafeteria.model.MenuItem;
+import src.main.java.com.cafeteria.model.Notification;
+import src.main.java.com.cafeteria.model.User;
+import src.main.java.com.cafeteria.util.Constant;
+
 public class Database {
     private static final String URL = "jdbc:mysql://localhost:3306/cafeteria";
     private static final String USER = "root";

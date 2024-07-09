@@ -1,7 +1,13 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.factory;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+
+import src.main.java.com.cafeteria.handler.AdminCommandHandler;
+import src.main.java.com.cafeteria.handler.ChefCommandHandler;
+import src.main.java.com.cafeteria.handler.CommandHandler;
+import src.main.java.com.cafeteria.handler.EmployeeCommandHandler;
+import src.main.java.com.cafeteria.model.User;
 
 public class CommandHandlerFactory {
     public static CommandHandler createCommandHandler(User user, BufferedReader in, PrintWriter out) {

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import src.main.java.com.cafeteria.model.User;
+
 public class Employee extends User {
 
     public Employee(String employeeId, String name, String role) {

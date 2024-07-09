@@ -1,4 +1,4 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.model;
 public class MenuItem {
     private int id;
     private String name;
@@ -12,7 +12,6 @@ public class MenuItem {
         this.isAvailable = isAvailable;
     }
 
-    // Getters
     public int getId() {
         return id;
     }

@@ -2,6 +2,8 @@ package src.main.java.com.cafeteria;
 
 import java.util.*;
 
+import src.main.java.com.cafeteria.model.Feedback;
+
 public class RecommendationEngine {
     private List<Feedback> feedbacks;
     private Map<Integer, Integer> itemFeedbacks;

@@ -1,4 +1,4 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.util;
 
 import java.util.HashMap;
 import java.util.Map;

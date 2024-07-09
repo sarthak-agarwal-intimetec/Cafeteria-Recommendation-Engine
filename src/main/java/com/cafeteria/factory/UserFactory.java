@@ -1,4 +1,9 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.factory;
+
+import src.main.java.com.cafeteria.Admin;
+import src.main.java.com.cafeteria.Chef;
+import src.main.java.com.cafeteria.Employee;
+import src.main.java.com.cafeteria.model.User;
 
 public class UserFactory {
     public static User createUser(String employeeId, String name, String role) {

@@ -1,8 +1,12 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.server;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
+
+import src.main.java.com.cafeteria.Admin;
+import src.main.java.com.cafeteria.Chef;
+import src.main.java.com.cafeteria.Employee;
 
 public class Client {
     private static final String SERVER_ADDRESS = "localhost";

@@ -1,4 +1,4 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.model;
 
 public class DiscardMenuItem {
     private int id;

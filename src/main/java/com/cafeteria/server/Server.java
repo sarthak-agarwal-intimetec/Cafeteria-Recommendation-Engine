@@ -1,4 +1,4 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
