@@ -1,6 +1,6 @@
 package src.main.java.com.cafeteria.model;
 
-import src.main.java.com.cafeteria.server.Database;
+import src.main.java.com.cafeteria.dao.UserDAO;
 
 public class User {
     private String employeeId;
@@ -53,7 +53,7 @@ public class User {
     }
 
     public boolean login(String employeeId, String name) {
-        boolean isValidUser = Database.validateUser(employeeId, name);
+        boolean isValidUser = UserDAO.validateUser(employeeId, name);
         return isValidUser;
     }
 }
