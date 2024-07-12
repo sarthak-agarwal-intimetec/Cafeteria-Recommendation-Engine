@@ -1,51 +1,13 @@
-package src.main.java.com.cafeteria;
+package src.main.java.com.cafeteria.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import src.main.java.com.cafeteria.model.User;
+public class EmployeeService {
 
-public class Employee extends User {
-
-    public Employee(String employeeId, String name, String role) {
-        super(employeeId, name, role);
-    }
-
-    public static void showCommands(Scanner scanner, PrintWriter out, BufferedReader in) {
-        try {
-            while (true) {
-                displayCommands();
-                String command = getUserInput(scanner, out, "Enter command: ");
-                if (!command.isBlank() && command.toLowerCase().equals("l")) {
-                    break;
-                }
-                processCommand(command, scanner, out, in);
-            }
-        } catch (IOException e) {
-            System.err.println("An error occurred while processing the command: " + e.getMessage());
-        }
-    }
-
-    private static void displayCommands() {
-        System.out.println("Commands: ");
-        System.out.println("1 - Display items rolled out by chef");
-        System.out.println("2 - Vote for the Item for Next day");
-        System.out.println("3 - Give feedback for the Item");
-        System.out.println("4 - View Today's Notification");
-        System.out.println("5 - Create/Update Profile");
-        System.out.println("L - Logout");
-    }
-
-    private static String getUserInput(Scanner scanner, PrintWriter out, String prompt) {
-        System.out.print(prompt);
-        String input = scanner.nextLine();
-        out.println(input);
-        return input;
-    }
-
-    private static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in)
+    public static void processCommand(String command, Scanner scanner, PrintWriter out, BufferedReader in)
             throws IOException {
         switch (command.toLowerCase()) {
             case "1":
@@ -66,6 +28,23 @@ public class Employee extends User {
             default:
                 System.out.println("Unknown command");
         }
+    }
+
+    public static void displayCommands() {
+        System.out.println("Commands: ");
+        System.out.println("1 - Display items rolled out by chef");
+        System.out.println("2 - Vote for the Item for Next day");
+        System.out.println("3 - Give feedback for the Item");
+        System.out.println("4 - View Today's Notification");
+        System.out.println("5 - Create/Update Profile");
+        System.out.println("L - Logout");
+    }
+
+    public static String getUserInput(Scanner scanner, PrintWriter out, String prompt) {
+        System.out.print(prompt);
+        String input = scanner.nextLine();
+        out.println(input);
+        return input;
     }
 
     private static void handleViewDailyMenuItem(BufferedReader in) throws IOException {

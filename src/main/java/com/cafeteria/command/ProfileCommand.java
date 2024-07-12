@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.UserDAO;
 import src.main.java.com.cafeteria.model.User;
 
 public class ProfileCommand implements Command {
@@ -26,7 +26,7 @@ public class ProfileCommand implements Command {
         int isSweetTooth = Integer.parseInt(in.readLine());
         String userId = user.getEmployeeId();
 
-        Database.updateProfile(dietaryPreference, spiceLevel, cuisineType, isSweetTooth, userId);
+        UserDAO.updateProfile(dietaryPreference, spiceLevel, cuisineType, isSweetTooth, userId);
         out.println("Item fetched successfully");
     }
 }

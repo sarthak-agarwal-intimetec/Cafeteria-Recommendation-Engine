@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.FeedbackDAO;
 import src.main.java.com.cafeteria.model.User;
 
 public class FeedbackCommand implements Command {
@@ -25,7 +25,7 @@ public class FeedbackCommand implements Command {
         String itemComment = in.readLine();
         String userId = user.getEmployeeId();
 
-        Database.addFeedback(itemIdForFeedback, itemRating, itemComment, userId);
+        FeedbackDAO.addFeedback(itemIdForFeedback, itemRating, itemComment, userId);
         out.println("Feedback submitted successfully");
     }
 }

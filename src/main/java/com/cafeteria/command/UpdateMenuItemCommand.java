@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.MenuItemDAO;
+import src.main.java.com.cafeteria.dao.NotificationDAO;
 import src.main.java.com.cafeteria.model.MenuItem;
 
 public class UpdateMenuItemCommand implements Command {
@@ -22,13 +23,13 @@ public class UpdateMenuItemCommand implements Command {
         String itemNameToUpdate = in.readLine();
         double itemPriceToUpdate = Double.parseDouble(in.readLine());
         String itemIsAvailableToUpdate = in.readLine();
-        MenuItem itemToUpdate = Database.getMenuItemById(itemIdToUpdate);
+        MenuItem itemToUpdate = MenuItemDAO.getMenuItemById(itemIdToUpdate);
 
-        Database.updateMenuItem(itemIdToUpdate, itemNameToUpdate, itemPriceToUpdate, itemIsAvailableToUpdate);
+        MenuItemDAO.updateMenuItem(itemIdToUpdate, itemNameToUpdate, itemPriceToUpdate, itemIsAvailableToUpdate);
         if (String.valueOf(itemToUpdate.isAvailable()) != itemIsAvailableToUpdate) {
             String message = "Availability status of this food item is changed - " + itemNameToUpdate + " -> "
                     + (itemIsAvailableToUpdate.equals("true") ? "Available" : "Not Available");
-            Database.addNotification(message);
+            NotificationDAO.addNotification(message);
         }
         out.println("Item updated successfully");
     }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.DiscardMenuItemDAO;
 import src.main.java.com.cafeteria.model.DiscardMenuItem;
 
 public class ViewDiscardMenuItemCommand implements Command {
@@ -16,7 +16,7 @@ public class ViewDiscardMenuItemCommand implements Command {
 
     @Override
     public void execute() throws IOException {
-        List<DiscardMenuItem> discardMenuItems = Database.getDiscardMenuItems();
+        List<DiscardMenuItem> discardMenuItems = DiscardMenuItemDAO.getDiscardMenuItems();
         out.printf("%-10s%-20s%n", "Item Id", "Item Name");
         for (DiscardMenuItem discardMenuItem : discardMenuItems) {
             out.printf("%-10d%-20s%n", discardMenuItem.getItemId(), discardMenuItem.getItemName());

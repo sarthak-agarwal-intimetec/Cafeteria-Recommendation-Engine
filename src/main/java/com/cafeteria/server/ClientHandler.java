@@ -3,7 +3,8 @@ package src.main.java.com.cafeteria.server;
 import java.io.*;
 import java.net.Socket;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.LoginActivityDAO;
+import src.main.java.com.cafeteria.dao.UserDAO;
 import src.main.java.com.cafeteria.factory.CommandHandlerFactory;
 import src.main.java.com.cafeteria.factory.UserFactory;
 import src.main.java.com.cafeteria.handler.CommandHandler;
@@ -39,7 +40,7 @@ public class ClientHandler extends Thread {
     private void handleClient() throws IOException {
         String employeeId = in.readLine();
         String name = in.readLine();
-        String userRole = Database.getUserRole(employeeId);
+        String userRole = UserDAO.getUserRole(employeeId);
         out.println(userRole);
 
         System.out.println("Received login request: " + userRole + ", " + employeeId + ", " + name);
@@ -49,7 +50,7 @@ public class ClientHandler extends Thread {
 
             if (user.login(employeeId, name)) {
                 out.println("Login successful as " + user.getRole());
-                Database.addLoginActivity(user.getEmployeeId(), "Logged in");
+                LoginActivityDAO.addLoginActivity(user.getEmployeeId(), "Logged in");
                 processCommands(user);
             } else {
                 out.println("Invalid credentials");
@@ -63,11 +64,11 @@ public class ClientHandler extends Thread {
         String command;
         while ((command = in.readLine()) != null) {
             if (command.toLowerCase().equals("l")) {
-                Database.addLoginActivity(user.getEmployeeId(), "Logged out");
+                LoginActivityDAO.addLoginActivity(user.getEmployeeId(), "Logged out");
                 break;
             }
             handleCommand(user, command);
-            Database.addLoginActivity(user.getEmployeeId(), command);
+            LoginActivityDAO.addLoginActivity(user.getEmployeeId(), command);
         }
     }
 

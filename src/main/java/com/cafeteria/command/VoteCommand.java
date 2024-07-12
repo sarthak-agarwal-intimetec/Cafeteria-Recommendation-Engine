@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.DailyMenuItemDAO;
 
 public class VoteCommand implements Command {
     private BufferedReader in;
@@ -18,7 +18,7 @@ public class VoteCommand implements Command {
     @Override
     public void execute() throws IOException {
         int itemIdToVote = Integer.parseInt(in.readLine());
-        Database.updateVoteCount(itemIdToVote);
+        DailyMenuItemDAO.updateVoteCount(itemIdToVote);
         out.println("Item voted successfully");
     }
 }

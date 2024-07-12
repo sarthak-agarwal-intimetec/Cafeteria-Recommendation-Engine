@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.DailyMenuItemDAO;
+import src.main.java.com.cafeteria.dao.UserDAO;
 import src.main.java.com.cafeteria.model.DailyMenuItem;
 import src.main.java.com.cafeteria.model.User;
 
@@ -19,8 +20,8 @@ public class DailyMenuItemCommand implements Command {
 
     @Override
     public void execute() throws IOException {
-        User userDetail = Database.getUserPreferenceDetail(user.getEmployeeId());
-        List<DailyMenuItem> dailyMenuItems = Database.getDailyMenuItems(userDetail);
+        User userDetail = UserDAO.getUserPreferenceDetail(user.getEmployeeId());
+        List<DailyMenuItem> dailyMenuItems = DailyMenuItemDAO.getDailyMenuItems(userDetail);
         out.printf("%-10s%-20s%-20s%-20s%n", "Item Id", "Item Name", "Average Rating", "Feedback");
         for (DailyMenuItem dailyMenuItem : dailyMenuItems) {
             out.printf("%-10d%-20s%-20.2f%-20s%n", dailyMenuItem.getItemId(), dailyMenuItem.getItemName(),

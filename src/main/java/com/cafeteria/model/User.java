@@ -1,6 +1,6 @@
 package src.main.java.com.cafeteria.model;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.server.Database;
 
 public class User {
     private String employeeId;

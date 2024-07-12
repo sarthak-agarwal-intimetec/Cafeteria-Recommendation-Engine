@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.MenuItemDAO;
 
 public class DeleteMenuItemCommand implements Command {
     private BufferedReader in;
@@ -18,7 +18,7 @@ public class DeleteMenuItemCommand implements Command {
     @Override
     public void execute() throws IOException {
         String itemIdToDelete = in.readLine();
-        Database.deleteMenuItem(itemIdToDelete);
+        MenuItemDAO.deleteMenuItem(itemIdToDelete);
         out.println("Item deleted successfully");
     }
 }

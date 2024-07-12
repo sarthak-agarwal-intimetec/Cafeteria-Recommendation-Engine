@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import src.main.java.com.cafeteria.Database;
+import src.main.java.com.cafeteria.dao.MenuItemDAO;
+import src.main.java.com.cafeteria.dao.NotificationDAO;
 
 public class AddMenuItemCommand implements Command {
     private BufferedReader in;
@@ -21,8 +22,8 @@ public class AddMenuItemCommand implements Command {
         double itemPrice = Double.parseDouble(in.readLine());
         String itemIsAvailable = in.readLine();
 
-        Database.addMenuItem(itemName, itemPrice, itemIsAvailable);
-        Database.addNotification("New Food Item is added, check this out - " + itemName + " -> Price: " + itemPrice);
+        MenuItemDAO.addMenuItem(itemName, itemPrice, itemIsAvailable);
+        NotificationDAO.addNotification("New Food Item is added, check this out - " + itemName + " -> Price: " + itemPrice);
         out.println("Item added successfully");
     }
 }
