@@ -15,7 +15,7 @@ public class UserFactory {
             case "employee":
                 return new Employee(employeeId, name, "Employee");
             default:
-                throw new IllegalArgumentException("Unknown role: " + role);
+                return new User(employeeId, name, "unknown");
         }
     }
 }

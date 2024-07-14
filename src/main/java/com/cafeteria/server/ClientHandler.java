@@ -40,7 +40,7 @@ public class ClientHandler extends Thread {
     private void handleClient() throws IOException {
         String employeeId = in.readLine();
         String name = in.readLine();
-        String userRole = UserDAO.getUserRole(employeeId);
+        String userRole = UserDAO.getUserRole(employeeId, name);
         out.println(userRole);
 
         System.out.println("Received login request: " + userRole + ", " + employeeId + ", " + name);
@@ -68,7 +68,6 @@ public class ClientHandler extends Thread {
                 break;
             }
             handleCommand(user, command);
-            LoginActivityDAO.addLoginActivity(user.getEmployeeId(), command);
         }
     }
 

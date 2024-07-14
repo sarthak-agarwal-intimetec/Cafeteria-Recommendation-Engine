@@ -25,10 +25,11 @@ public class UserDAO {
         return false;
     }
 
-    public static String getUserRole(String employeeId) {
-        String query = "SELECT role FROM User WHERE employeeId = ?";
+    public static String getUserRole(String employeeId, String name) {
+        String query = "SELECT role FROM User WHERE employeeId = ? AND name = ?";
         try (Connection conn = Database.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, employeeId);
+            stmt.setString(2, name);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("role");
@@ -37,7 +38,7 @@ public class UserDAO {
         } catch (SQLException e) {
             Database.handleSQLException(e);
         }
-        return "";
+        return "unknown";
     }
 
     public static User getUserPreferenceDetail(String employeeId) {

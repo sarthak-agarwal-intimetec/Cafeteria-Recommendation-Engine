@@ -25,8 +25,7 @@ public class ChefService {
                 handleDiscardMenuItemNotification(scanner, out, in);
                 break;
             default:
-                System.out.println("Unknown command");
-                break;
+                handleServerResponse(in, "Unknown command");
         }
     }
 
@@ -49,13 +48,13 @@ public class ChefService {
     }
 
     private static void handleShowRecommendation(BufferedReader in) throws IOException {
-        handleServerResponse(in, "Item fetched successfully");
+        handleServerResponse(in, "Recommendations fetched successfully");
     }
 
     private static void handleRollOutMenu(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
         getUserInput(scanner, out, "Enter item number for next day: ");
 
-        handleServerResponse(in, "Item added successfully");
+        handleServerResponse(in, "Item rolled out successfully");
     }
 
     private static void handleViewDiscardMenuItem(BufferedReader in) throws IOException {

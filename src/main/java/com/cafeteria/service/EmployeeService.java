@@ -26,7 +26,7 @@ public class EmployeeService {
                 handleProfile(scanner, out, in);
                 break;
             default:
-                System.out.println("Unknown command");
+                handleServerResponse(in, "Unknown command");
         }
     }
 
@@ -48,7 +48,7 @@ public class EmployeeService {
     }
 
     private static void handleViewDailyMenuItem(BufferedReader in) throws IOException {
-        handleServerResponse(in, "Item Fetched Succesfully");
+        handleServerResponse(in, "Items Fetched Successfully");
     }
 
     private static void handleVote(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
@@ -62,11 +62,11 @@ public class EmployeeService {
         getUserInput(scanner, out, "Enter item rating: ");
         getUserInput(scanner, out, "Enter item comment: ");
 
-        handleServerResponse(in, "Item Feedbacked Successfully");
+        handleServerResponse(in, "Feedback Submitted Successfully");
     }
 
     private static void handleViewNotification(BufferedReader in) throws IOException {
-        handleServerResponse(in, "Notification Fetched Succesfully");
+        handleServerResponse(in, "Notifications Fetched Successfully");
     }
 
     private static void handleProfile(Scanner scanner, PrintWriter out, BufferedReader in) throws IOException {
@@ -86,7 +86,7 @@ public class EmployeeService {
                 "1.Yes \n" +
                 "2. No \n");
 
-        handleServerResponse(in, "Profile Updated Succesfully");
+        handleServerResponse(in, "Profile Updated Successfully");
     }
 
     private static void handleServerResponse(BufferedReader in, String successMessage) throws IOException {

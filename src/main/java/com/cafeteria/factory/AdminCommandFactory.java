@@ -20,9 +20,9 @@ public class AdminCommandFactory {
             case "2":
                 return new AddMenuItemCommand(in, out);
             case "3":
-                return new UpdateMenuItemCommand(in,out);
+                return new UpdateMenuItemCommand(in, out);
             case "4":
-                return new DeleteMenuItemCommand(in,out);
+                return new DeleteMenuItemCommand(in, out);
             case "5":
                 return new ViewDiscardMenuItemCommand(out);
             case "6":
@@ -30,7 +30,7 @@ public class AdminCommandFactory {
             case "7":
                 return new DiscardMenuItemNotificationCommand(in, out);
             default:
-                throw new IllegalArgumentException("Unknown command: " + command);
+                throw new IllegalArgumentException("Unknown command");
         }
     }
 }

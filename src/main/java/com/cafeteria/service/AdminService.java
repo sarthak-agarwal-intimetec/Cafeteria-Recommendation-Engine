@@ -31,7 +31,7 @@ public class AdminService {
                 handleDiscardMenuItemNotification(scanner, out, in);
                 break;
             default:
-                System.out.println("Unknown command");
+                handleServerResponse(in,"Unknown command");
         }
     }
 

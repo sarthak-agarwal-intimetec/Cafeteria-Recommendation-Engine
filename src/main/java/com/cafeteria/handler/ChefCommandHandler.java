@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import src.main.java.com.cafeteria.command.Command;
+import src.main.java.com.cafeteria.dao.LoginActivityDAO;
 import src.main.java.com.cafeteria.factory.ChefCommandFactory;
 import src.main.java.com.cafeteria.model.User;
+import src.main.java.com.cafeteria.util.Constant;
 
 public class ChefCommandHandler extends CommandHandler {
 
@@ -19,6 +21,8 @@ public class ChefCommandHandler extends CommandHandler {
         try {
             Command cmd = ChefCommandFactory.createCommand(command, in, out);
             cmd.execute();
+            LoginActivityDAO.addLoginActivity(user.getEmployeeId(),
+                    Constant.chefCommandMap.get(Integer.parseInt(command)));
         } catch (IllegalArgumentException e) {
             out.println(e.getMessage());
         }

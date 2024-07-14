@@ -17,11 +17,11 @@ public class NotificationCommand implements Command {
     @Override
     public void execute() throws IOException {
         List<Notification> notifications = NotificationDAO.getNotifications();
-        out.printf("%-100s%-10s%n", "Message", "Time");
+        out.printf("%-255s%-10s%n", "Message", "Time");
         for (Notification notification : notifications) {
-            out.printf("%-100s%-20s%n", notification.getMessage(), notification.getTimestamp());
+            out.printf("%-255s%-10s%n", notification.getMessage(), notification.getTimestamp());
         }
         out.println("Notifications fetched successfully");
     }
-    
+
 }

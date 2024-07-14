@@ -27,6 +27,6 @@ public class ProfileCommand implements Command {
         String userId = user.getEmployeeId();
 
         UserDAO.updateProfile(dietaryPreference, spiceLevel, cuisineType, isSweetTooth, userId);
-        out.println("Item fetched successfully");
+        out.println("Profile Updated Successfully");
     }
 }

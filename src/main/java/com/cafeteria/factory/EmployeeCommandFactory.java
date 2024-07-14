@@ -25,7 +25,7 @@ public class EmployeeCommandFactory {
             case "5":
                 return new ProfileCommand(in, out, user);
             default:
-                throw new IllegalArgumentException("Unknown command: " + command);
+                throw new IllegalArgumentException("Unknown command");
         }
     }
 }
